@@ -15,6 +15,8 @@ namespace Projet
 			Console.WriteLine();
 
 			// Récupération des composants
+			afficher(flatSpell(sort));
+			Console.WriteLine("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_");
 			afficher(calculCout(sort));
 		}
 
@@ -149,9 +151,6 @@ namespace Projet
 			else return 0;
 		}
 
-		/** <summary> Coût en mémoire des constantes LIBRES </summary>
-			<param name="args"> Arguments du sort </param>
-		*/
 		public static byte[] coutCible(string cible, byte puissance)
 		{
 			byte[] res = new byte[3] { 0, 0, 0 };
@@ -171,6 +170,48 @@ namespace Projet
 			return res;
 		}
 
+		public static byte selectForme(string forme){
+			if (forme.StartsWith("boule(")) return 1;
+			if (forme.StartsWith("cage(")) return 2;
+			if (forme.StartsWith("fleur(")) return 3;
+			if (forme.StartsWith("flèche(")) return 4;
+			if (forme.StartsWith("lame(")) return 5;
+			if (forme.StartsWith("lance(")) return 6;
+			if (forme.StartsWith("lierre(")) return 7;
+			if (forme == "ligne") return 8;
+			else return 0;
+		}
+
+		public static byte[] coutForme(string forme)
+		{
+			byte[] res = new byte[3] { 0, 0, 0 };
+			byte indexForme = selectForme(forme);
+
+			switch (indexForme)
+			{
+				case 1: res = Somme(res, Mot.Boule(forme)); break;
+				case 2: res = Somme(res, Mot.Cage(forme)); break;
+				case 3: res = Somme(res, Mot.Fleur(forme)); break;
+				case 4: res = Somme(res, Mot.Fleche(forme)); break;
+				case 5: res = Somme(res, Mot.Lame(forme)); break;
+				case 6: res = Somme(res, Mot.Lance(forme)); break;
+				case 7: res = Somme(res, Mot.Lierre(forme)); break;
+				case 8: res = Somme(res, Mot.Ligne()); break;
+				default: throw new Exception("FormeUnknown");
+			}
+			return res;
+		}
+
+		public static byte selectTemps(string temps){
+			if(temps.StartsWith("constante")) return 1;
+			else if (temps == "aura") return 2;
+			else if (temps == "passif") return 3;
+			else return 0;
+		}
+
+		/** <summary> Coût en mémoire des constantes LIBRES </summary>
+			<param name="args"> Arguments du sort </param>
+		*/
 		public static byte coutMemoireConst(string[] args)
 		{
 			byte res = 0;
@@ -185,10 +226,16 @@ namespace Projet
 			return res;
 		}
 
+		public static byte nbAddons(string s){
+			byte res = 0;
+			while(res < s.Length && s[s.Length-2-res] == ')') res++;
+			return res;
+		}
 		public static byte[] calculCout(string s)
 		{
 			string motPrincipal = getMotPrincipal(s).ToLower();
 			string[] arguments = ToLower(getArguments(s));
+			
 
 			int nbArgs = arguments.Count();
 			byte[] res = new byte[3] { 0, 0, 0 };
@@ -201,8 +248,7 @@ namespace Projet
 			{
 				// ======== Soin
 				case "soin":
-					if (nbArgs < 2) goto Error; // Manque des arguments
-					if (constValue(arguments[1]) > 10) goto Error;
+					if (nbArgs < 2 || nbArgs > 4 || constValue(arguments[1]) > 10) goto Error; // Manque des arguments
 					else goto Addon;
 				// ======== Eau
 				case "eau":
@@ -219,12 +265,25 @@ namespace Projet
 
 				// ======== Feu
 				case "feu":
-					if (nbArgs < 2) goto Error; // Manque des arguments
-					goto Addon;
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
+					if (nbArgs > 2)
+					{
+						res = Somme(res, Mot.Feu(constValue(arguments[1]), arguments[2]));
+						goto Addon; // Mot clé supplémentaire ?
+					}
+					else res = Somme(res, Mot.Feu(constValue(arguments[1])));
+					break;
 				// ======== Foudre
 				case "foudre":
-					if (nbArgs < 2) goto Error; // Manque des arguments
-					goto Addon;
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
+					if (nbArgs > 3) {
+						res = Somme(res, Mot.Foudre(constValue(arguments[1]),arguments[2], nbAddons(s)));
+						goto Addon;
+					}
+					if (nbArgs > 2)
+					res = Somme(res, Mot.Foudre(constValue(arguments[1]),arguments[2]));
+					else res = Somme(res, Mot.Foudre(constValue(arguments[1])));
+					break;
 				// ======== Glace
 				case "glace":
 					if (nbArgs < 2) goto Error; // Manque des arguments
@@ -246,11 +305,14 @@ namespace Projet
 				// ======== Esprit
 				case "esprit": break;
 				// ======== Perméable
-				case "permeable": break;
+				case "perméable": break;
 				// ======== Vie Pondéré
-				case "viepondere": break;
+				case "viepondéré": break;
 				// ======== Brule
-				case "brule": break;
+				case "brûle": 
+					if (nbArgs < 3) goto Error;
+					res = Somme(res, Mot.Brule(constValue(arguments[1]),constValue(arguments[2])));
+					goto Addon;
 
 				default:
 				Error: // ERREUR !
