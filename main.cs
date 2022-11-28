@@ -2,7 +2,6 @@ namespace Projet
 {
 	public class M
 	{
-		private Mot mot = new Mot();
 		public static void Main()
 		{
 			// Demande du sort
@@ -74,7 +73,8 @@ namespace Projet
 			<param name="s"> L'écriture du sort </param>
 			<returns> Le mot-clé principal </returns>
 		*/
-		public static string getMotPrincipal(string s){
+		public static string getMotPrincipal(string s)
+		{
 			string res = ""; int i = 0;
 			while (s.Length > i && s[i] != '(') res += s[i++];
 			return res;
@@ -84,83 +84,114 @@ namespace Projet
 			<param name="s"> L'écriture du sort</param>
 			<returns>La liste d'arguments du mot-clé principal</returns>
 		*/
-		public static string[] getArguments(string s){
+		public static string[] getArguments(string s)
+		{
 			string[] e = flatSpell(s);
 			List<string> list = new List<string>(); // Résultat sous forme de liste
+
 			for (int i = 1; i < e.Length; i++)
 			{
 				string current = e[i];
 				list.Add(current);
+
 				for (int j = 0; j < current.Length; j++)
-				{
-					if (current[j] == '(' || current[j] == ',')
-					{
-						i++;
-					}
-				}
-				
+					if (current[j] == '(' || current[j] == ',') i++;
 			}
+
 			string[] res = list.ToArray();
 			return res;
 		}
-		public static void afficher<T>(T[] list) where T : IComparable<T>{
-			// Personnel : Afficher le coût d'un sort
-			if(list.GetType() == System.Type.GetType("System.Byte") && list.Length == 3){
+		public static void afficher<T>(T[] list) where T : IComparable<T>
+		{
+			// Afficher le coût d'un sort
+			if (list is System.Byte[] && list.Length == 3)
+			{
 				Console.WriteLine("MC : " + list[0]);
 				Console.WriteLine("MM : " + list[1]);
 				Console.WriteLine("ME : " + list[2]);
-			} 
+			}
 			// Afficher les autres tableaux
-			else foreach (T elem in list) {
-				Console.WriteLine(elem);
-			}
+			else foreach (T elem in list) Console.WriteLine(elem);
 		}
-		public static string[] ToLower(string[] a){
+		public static string[] ToLower(string[] a)
+		{
 			List<string> res = new List<string>();
-			foreach(string elem in a){
-				res.Add(elem.ToLower());
-			}
+			foreach (string elem in a) res.Add(elem.ToLower());
 			return res.ToArray();
 		}
-		public static byte[] Somme(byte[] a, byte[] b){
+		public static byte[] Somme(byte[] a, byte[] b)
+		{
 			byte[] res = new byte[a.Length];
+
 			for (byte r = 0; r < a.Length; r++)
-			{
-				res[r] = (byte) (a[r] + b[r]);
-			}
+				res[r] = (byte)(a[r] + b[r]);
+
 			return res;
 		}
-		public static byte constValue(string c){
-			return byte.Parse(c.Split(" ",2)[1]);
+
+		/** <summary> Récupère la valeur numérique d'une constante </summary>
+			<param name="c"> La constante </param>
+		*/
+		public static byte constValue(string c)
+		{
+			return byte.Parse(c.Split(" ", 2)[1]);
 		}
-		public static byte selectCible(string cible){
-			if(cible.StartsWith("contact(")) return 1;
-			if(cible == "entite") return 2;
-			if(cible.StartsWith("objet(")) return 3;
-			if(cible.StartsWith("projectile(")) return 4;
-			if(cible == "soi") return 5;
-			if(cible.StartsWith("zone(")) return 6;
+
+		public static byte selectCible(string cible)
+		{
+			if (cible.StartsWith("contact(")) return 1;
+			if (cible == "entité") return 2;
+			if (cible.StartsWith("objet(")) return 3;
+			if (cible.StartsWith("projectile(")) return 4;
+			if (cible.StartsWith("rayon(")) return 5;
+			if (cible == "soi") return 6;
+			if (cible.StartsWith("zone(")) return 7;
 			else return 0;
 		}
+
 		/** <summary> Coût en mémoire des constantes LIBRES </summary>
 			<param name="args"> Arguments du sort </param>
 		*/
-		public static byte coutMemoireConst(string[] args){
+		public static byte[] coutCible(string cible, byte puissance)
+		{
+			byte[] res = new byte[3] { 0, 0, 0 };
+			byte indexCible = selectCible(cible);
+
+			switch (indexCible)
+			{
+				case 1: res = Somme(res, Mot.Contact(cible, puissance)); break;
+				case 2: res = Somme(res, Mot.Entite()); break;
+				case 3: res = Somme(res, Mot.Objet(cible)); break;
+				case 4: res = Somme(res, Mot.Projectile(cible)); break;
+				case 5: res = Somme(res, Mot.Rayon(cible)); break;
+				case 6: res = Somme(res, Mot.Soi()); break;
+				case 7: res = Somme(res, Mot.Zone(cible, puissance)); break;
+				default: throw new Exception("CibleUnknown");
+			}
+			return res;
+		}
+
+		public static byte coutMemoireConst(string[] args)
+		{
 			byte res = 0;
-			foreach(string argument in args){
-				if(argument.StartsWith("constante")){
-					if(constValue(argument)< 0) throw new Exception("NegativeConstant");
-					res += (byte) (constValue(argument) / 5);
+			foreach (string argument in args)
+			{
+				if (argument.StartsWith("constante"))
+				{
+					if (constValue(argument) < 0) throw new Exception("NegativeConstant");
+					res += (byte)(constValue(argument) / 5);
 				}
 			}
 			return res;
 		}
-		public static byte[] calculCout(string s){
+
+		public static byte[] calculCout(string s)
+		{
 			string motPrincipal = getMotPrincipal(s).ToLower();
 			string[] arguments = ToLower(getArguments(s));
 
 			int nbArgs = arguments.Count();
-			byte[] res = new byte[3]{0, 0, 0};
+			byte[] res = new byte[3] { 0, 0, 0 };
 
 			// Coût en mémoire des constantes LIBRES (N'est pas enclavé par un mot clé)
 			res[1] = coutMemoireConst(arguments);
@@ -170,40 +201,42 @@ namespace Projet
 			{
 				// ======== Soin
 				case "soin":
-					if(nbArgs < 2) goto Error; // Manque des arguments
-					if(constValue(arguments[1]) > 10) goto Error;
+					if (nbArgs < 2) goto Error; // Manque des arguments
+					if (constValue(arguments[1]) > 10) goto Error;
 					else goto Addon;
 				// ======== Eau
 				case "eau":
 					// Nombre d'arguments incorrect ?
-					if(nbArgs < 2 || nbArgs > 4) goto Error;
+					if (nbArgs < 2 || nbArgs > 4) goto Error;
 
-					// Prix du mot-clé
-					res = Somme(res, Mot.Eau(constValue(arguments[1])));
-
-					// Temps non vide
-					if(nbArgs > 2) {
-						if(arguments[2].StartsWith("constante")) res = Somme(res, new byte[3]{0,0,(byte) (constValue(arguments[2])/4)});
-						else if(arguments[2] == "aura") res = Somme(res, Mot.Aura(arguments[1]));
-						else if(arguments[2] == "passif") res = Somme(res, Mot.Passif(arguments[1]));
-						else goto Error;
+					if (nbArgs > 2)
+					{
+						res = Somme(res, Mot.Eau(constValue(arguments[1]), arguments[2]));
+						goto Addon; // Mot clé supplémentaire ?
 					}
+					else res = Somme(res, Mot.Eau(constValue(arguments[1])));
+					break;
 
-					// Mot clé supplémentaire ?
-					goto Addon;
 				// ======== Feu
 				case "feu":
-					if(nbArgs < 2) goto Error; // Manque des arguments
+					if (nbArgs < 2) goto Error; // Manque des arguments
 					goto Addon;
 				// ======== Foudre
 				case "foudre":
-					if(nbArgs < 2) goto Error; // Manque des arguments
+					if (nbArgs < 2) goto Error; // Manque des arguments
 					goto Addon;
 				// ======== Glace
 				case "glace":
-					if(nbArgs < 2) goto Error; // Manque des arguments
-					goto Addon;
-				
+					if (nbArgs < 2) goto Error; // Manque des arguments
+
+					if (nbArgs > 2)
+					{
+						res = Somme(res, Mot.Glace(constValue(arguments[1]), arguments[2]));
+						goto Addon; // Mot clé supplémentaire ?
+					}
+					else res = Somme(res, Mot.Glace(constValue(arguments[1])));
+					break;
+
 				// ======== Son
 				case "son": break;
 				// ======== Analyse
@@ -220,50 +253,19 @@ namespace Projet
 				case "brule": break;
 
 				default:
-					Error: // ERREUR !
+				Error: // ERREUR !
 					Console.WriteLine("Le sort \"" + s + "\" n'a pas été compris.");
 					throw new Exception("Unhandled Spell");
 
-					// ======== Addon ?
-					Addon:
-					if(nbArgs > 3) {
-						res = Somme(res, calculCout(arguments[3]));
-					}
+				// ======== Addon ?
+				Addon:
+					if (nbArgs > 3) res = Somme(res, calculCout(arguments[3]));
 					break;
 			}
-			
+
 			// Cout Cible
-			res = Somme(res, coutCible(arguments[0], (byte) constValue(arguments[1])));
+			res = Somme(res, coutCible(arguments[0], (byte)constValue(arguments[1])));
 
-			return res;
-		}
-
-		public static byte[] coutCible(string cible, byte puissance){
-			byte[] res = new byte[3]{0,0,0};
-			byte indexCible = selectCible(cible);
-
-			switch(indexCible){
-				case 1: // Contact
-					res = Somme(res, Mot.Contact(cible, puissance));
-					break;
-				case 2: // Entité
-					res = Somme(res, Mot.Entite());
-					break;
-				case 3: // Objet
-					res = Somme(res, Mot.Objet(cible));
-					break;
-				case 4: // Projectile
-					res = Somme(res, Mot.Projectile(cible));
-					break;
-				case 5: // Soi
-					res = Somme(res, Mot.Soi());
-					break;
-				case 6: // Zone
-					res = Somme(res, Mot.Zone(cible, puissance));
-					break;
-				default:
-					throw new Exception("CibleUnknown");
-			}
 			return res;
 		}
 	}
