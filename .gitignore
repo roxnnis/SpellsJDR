@@ -6,6 +6,7 @@ app/
 
 # Workspace VSCode
 *.code-workspace
+*.vscode
 
 # User-specific files
 *.suo
