@@ -2,13 +2,32 @@ namespace Projet
 {
 	public class M
 	{
+		/** <summary> Fonction principale permettant le calcul des sorts donnés </summary>
+		*/
 		public static void Main()
 		{
+			Console.WriteLine("Bienvenue dans le SpellCalculator !");
+			byte choice;
 			while (true)
 			{
-				// Demande du sort
 				Console.WriteLine();
-				Console.WriteLine("Écrivez votre sort : ");
+
+				// Menu
+				choice = menu();
+				
+				Console.WriteLine();
+				switch(choice){
+					case 1: afficher(calculCout(spell())); break;
+					case 2: listeMots(); break;
+					case 3: return;
+					default: Console.WriteLine("Le choix n'a pas été compris.");break;
+				}
+			}
+		}
+
+		public static string spell(){
+			Console.WriteLine();
+				Console.WriteLine("Veuillez entrer un sort : ");
 				var sort = Console.ReadLine();
 				while (sort == "" || sort == null)
 				{
@@ -17,20 +36,79 @@ namespace Projet
 					sort = Console.ReadLine();
 				}
 				Console.WriteLine();
+				return sort;
+		}
 
-				if (sort == "exit") break;
-				// Récupération des composants
-				/*
-				afficher(flatSpell(sort));
-				Console.WriteLine("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_");
-				*/
-				try
+		public static void listeMots(){
+			Console.WriteLine("================= Arguments numériques =================");
+			Console.WriteLine();
+			Console.WriteLine("Constante      [Valeur]                                 ");
+			Console.WriteLine();
+			Console.WriteLine("================== Éléments  naturels ==================");
+			Console.WriteLine();
+			Console.WriteLine("Eau            [Cible] [Puissance]      <Temps>  <Addon>");
+			Console.WriteLine("Feu            [Cible] [Puissance]      <Temps>  <Addon>");
+			Console.WriteLine("Foudre         [Cible] [Puissance]      <Temps>  <Addon>");
+			Console.WriteLine("Glace          [Cible] [Puissance]      <Temps>  <Addon>");
+			Console.WriteLine("Poison         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
+			Console.WriteLine("Soin           [Cible] [Puissance <= 9] <Temps>  <Addon>");
+			Console.WriteLine("Soin Statut    [Cible] [Chance]                  <Addon> /!\\ Not Implemented Yet");
+			Console.WriteLine("Son            [Cible] [Puissance]      <Chance> <Addon>");
+			Console.WriteLine("Terre          [Cible] [Puissance]      <Temps>  <Addon>");
+			Console.WriteLine("Vent           [Cible] [Puissance]      <Temps>  <Addon> /!\\ Not Implemented Yet");
+			Console.WriteLine();
+			Console.WriteLine("=================== Éléments neutres ===================");
+			Console.WriteLine();
+			Console.WriteLine("Analyse        [Cible]                           <Addon>");
+			Console.WriteLine("Armure [Cible] [Puissance]              <Temps>  <Addon>");
+			Console.WriteLine("Esprit         [Cible] [Puissance]      <Temps>  <Addon>");
+			Console.WriteLine("Perméable      [Cible] [Puissance]      <Temps>  <Addon>");
+			Console.WriteLine("Vie Pondéré    [Cible] [Puissance]      <Temps>  <Addon>");
+			Console.WriteLine();
+			Console.WriteLine("====================== Affliction ======================");
+			Console.WriteLine();
+			Console.WriteLine("Brûle          [Cible] [Puissance]      <Chance> <Addon>");
+			Console.WriteLine();
+			Console.WriteLine("======================== Cibles ========================");
+			Console.WriteLine();
+			Console.WriteLine("Contact        [Cible]                                  ");
+			Console.WriteLine("Entité                                                  ");
+			Console.WriteLine("Objet          [Forme]                  <Distance>      ");
+			Console.WriteLine("Projectile     [Forme]                  <Distance>      ");
+			Console.WriteLine("Rayon          [Taille]                 <Distance>      ");
+			Console.WriteLine("Soi                                                     ");
+			Console.WriteLine("Zone           [Taille <= 5]            <Distance>      ");
+			Console.WriteLine();
+			Console.WriteLine("======================== Formes ========================");
+			Console.WriteLine();
+			Console.WriteLine("Boule          [Taille]                 <Nombre >= 1>   ");
+			Console.WriteLine("Cage           [Taille]                                 ");
+			Console.WriteLine("Fleur          [Taille]                 <Nombre >= 1>   ");
+			Console.WriteLine("Flèche         [Taille]                 <Nombre >= 1>   ");
+			Console.WriteLine("Lame           [Taille]                 <Nombre >= 1>   ");
+			Console.WriteLine("Lance          [Taille]                 <Nombre >= 1>   ");
+			Console.WriteLine("Lierre         [Taille]                 <Propagation>   ");
+			Console.WriteLine("Ligne                                                   ");
+			Console.WriteLine();
+			Console.WriteLine("========================= Tour =========================");
+			Console.WriteLine();
+			Console.WriteLine("Aura                                                    ");
+			Console.WriteLine("Passif                                                  ");
+		}
+		public static byte menu()
+		{
+			while (true)
+			{
+				Console.WriteLine("1) Écrire un sort");
+				Console.WriteLine("2) Afficher la liste des mots disponibles");
+				Console.WriteLine("3) Sortir");
+				var choice = Console.ReadLine();
+				switch (choice)
 				{
-					afficher(calculCout(sort));
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e);
+					case "1": return 1;
+					case "2": return 2;
+					case "3": return 3;
+					default: break;
 				}
 			}
 		}
