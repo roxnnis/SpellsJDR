@@ -4,20 +4,35 @@ namespace Projet
 	{
 		public static void Main()
 		{
-			// Demande du sort
-			Console.WriteLine("Écrivez votre sort : ");
-			var sort = Console.ReadLine();
-			while (sort == "" || sort == null)
+			while (true)
 			{
-				Console.WriteLine("Veuillez entrer un sort : ");
-				sort = Console.ReadLine();
-			}
-			Console.WriteLine();
+				// Demande du sort
+				Console.WriteLine();
+				Console.WriteLine("Écrivez votre sort : ");
+				var sort = Console.ReadLine();
+				while (sort == "" || sort == null)
+				{
+					Console.WriteLine();
+					Console.WriteLine("Veuillez entrer un sort : ");
+					sort = Console.ReadLine();
+				}
+				Console.WriteLine();
 
-			// Récupération des composants
-			afficher(flatSpell(sort));
-			Console.WriteLine("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_");
-			afficher(calculCout(sort));
+				if (sort == "exit") break;
+				// Récupération des composants
+				/*
+				afficher(flatSpell(sort));
+				Console.WriteLine("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_");
+				*/
+				try
+				{
+					afficher(calculCout(sort));
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+				}
+			}
 		}
 
 		/**	<summary> Sépare chaque mot du sort en blocs contenant le mot et ses arguments</summary>
@@ -165,12 +180,13 @@ namespace Projet
 				case 5: res = Somme(res, Mot.Rayon(cible)); break;
 				case 6: res = Somme(res, Mot.Soi()); break;
 				case 7: res = Somme(res, Mot.Zone(cible, puissance)); break;
-				default: throw new Exception("CibleUnknown");
+				default: throw new Exception("CibleUnknown : La cible n'a pas été comprise.");
 			}
 			return res;
 		}
 
-		public static byte selectForme(string forme){
+		public static byte selectForme(string forme)
+		{
 			if (forme.StartsWith("boule(")) return 1;
 			if (forme.StartsWith("cage(")) return 2;
 			if (forme.StartsWith("fleur(")) return 3;
@@ -197,13 +213,14 @@ namespace Projet
 				case 6: res = Somme(res, Mot.Lance(forme)); break;
 				case 7: res = Somme(res, Mot.Lierre(forme)); break;
 				case 8: res = Somme(res, Mot.Ligne()); break;
-				default: throw new Exception("FormeUnknown");
+				default: throw new Exception("FormeUnknown : La forme n'a pas été comprise.");
 			}
 			return res;
 		}
 
-		public static byte selectTemps(string temps){
-			if(temps.StartsWith("constante")) return 1;
+		public static byte selectTemps(string temps)
+		{
+			if (temps.StartsWith("constante")) return 1;
 			else if (temps == "aura") return 2;
 			else if (temps == "passif") return 3;
 			else return 0;
@@ -226,31 +243,65 @@ namespace Projet
 			return res;
 		}
 
-		public static byte nbAddons(string s){
+		public static byte nbAddons(string s)
+		{
 			byte res = 0;
-			while(res < s.Length && s[s.Length-2-res] == ')') res++;
+			while (res < s.Length && s[s.Length - 2 - res] == ')') res++;
 			return res;
 		}
 		public static byte[] calculCout(string s)
 		{
 			string motPrincipal = getMotPrincipal(s).ToLower();
 			string[] arguments = ToLower(getArguments(s));
-			
 
+			// Compte du nombre d'arguments pour avoir le bon nombre de paramètres sur un mot clé donné
 			int nbArgs = arguments.Count();
+
+			// Résultat du calcul (Important donc :D)
 			byte[] res = new byte[3] { 0, 0, 0 };
 
 			// Coût en mémoire des constantes LIBRES (N'est pas enclavé par un mot clé)
 			res[1] = coutMemoireConst(arguments);
 
+			// Cout Cible
+			// Blacklist : Analyse (Aucune puissance)
+			res = Somme(res, coutCible(arguments[0], (byte)(new string[1] { "analyse" }.Contains(motPrincipal) ? 0 : (byte)constValue(arguments[1]))));
+
 			// Cout element
 			switch (motPrincipal)
 			{
-				// ======== Soin
-				case "soin":
-					if (nbArgs < 2 || nbArgs > 4 || constValue(arguments[1]) > 10) goto Error; // Manque des arguments
-					else goto Addon;
-				// ======== Eau
+				// ================================================================================
+				// ANALYSE
+				// ================================================================================
+				case "analyse":
+					if (nbArgs < 1 || nbArgs > 2) goto Error; // Manque des arguments
+					res = Somme(res, Mot.Analyse());
+					if (nbArgs > 1)
+						goto Addon;
+					break;
+				// ================================================================================
+				// ARMURE & ESPRIT
+				// ================================================================================
+				case "armure":
+				case "esprit":
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Manque des arguments
+					if (nbArgs > 2)
+					{
+						res = Somme(res, Mot.Armuresprit(constValue(arguments[1]), arguments[2]));
+						goto Addon; // Mot clé supplémentaire ?
+					}
+					else res = Somme(res, Mot.Armuresprit(constValue(arguments[1])));
+					break;
+				// ================================================================================
+				// BRULE
+				// ================================================================================
+				case "brûle":
+					if (nbArgs < 3 || nbArgs > 4) goto Error;
+					res = Somme(res, Mot.Brule(constValue(arguments[1]), constValue(arguments[2])));
+					goto Addon;
+				// ================================================================================
+				// EAU
+				// ================================================================================
 				case "eau":
 					// Nombre d'arguments incorrect ?
 					if (nbArgs < 2 || nbArgs > 4) goto Error;
@@ -262,8 +313,9 @@ namespace Projet
 					}
 					else res = Somme(res, Mot.Eau(constValue(arguments[1])));
 					break;
-
-				// ======== Feu
+				// ================================================================================
+				// FEU
+				// ================================================================================
 				case "feu":
 					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
 					if (nbArgs > 2)
@@ -273,20 +325,25 @@ namespace Projet
 					}
 					else res = Somme(res, Mot.Feu(constValue(arguments[1])));
 					break;
-				// ======== Foudre
+				// ================================================================================
+				// FOUDRE
+				// ================================================================================
 				case "foudre":
 					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
-					if (nbArgs > 3) {
-						res = Somme(res, Mot.Foudre(constValue(arguments[1]),arguments[2], nbAddons(s)));
+					if (nbArgs > 3)
+					{
+						res = Somme(res, Mot.Foudre(constValue(arguments[1]), arguments[2], nbAddons(s)));
 						goto Addon;
 					}
 					if (nbArgs > 2)
-					res = Somme(res, Mot.Foudre(constValue(arguments[1]),arguments[2]));
+						res = Somme(res, Mot.Foudre(constValue(arguments[1]), arguments[2]));
 					else res = Somme(res, Mot.Foudre(constValue(arguments[1])));
 					break;
-				// ======== Glace
+				// ================================================================================
+				// GLACE
+				// ================================================================================
 				case "glace":
-					if (nbArgs < 2) goto Error; // Manque des arguments
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Manque des arguments
 
 					if (nbArgs > 2)
 					{
@@ -295,38 +352,88 @@ namespace Projet
 					}
 					else res = Somme(res, Mot.Glace(constValue(arguments[1])));
 					break;
+				// ================================================================================
+				// SOIN
+				// ================================================================================
+				case "soin":
+					if (nbArgs < 2 || nbArgs > 4 || constValue(arguments[1]) > 10) goto Error; // Manque des arguments ou argument invalide
 
-				// ======== Son
-				case "son": break;
-				// ======== Analyse
-				case "analyse": break;
-				// ======== Armure
-				case "armure": break;
-				// ======== Esprit
-				case "esprit": break;
-				// ======== Perméable
-				case "perméable": break;
-				// ======== Vie Pondéré
-				case "viepondéré": break;
-				// ======== Brule
-				case "brûle": 
-					if (nbArgs < 3) goto Error;
-					res = Somme(res, Mot.Brule(constValue(arguments[1]),constValue(arguments[2])));
-					goto Addon;
+					if (nbArgs > 2)
+					{
+						res = Somme(res, Mot.Soin(constValue(arguments[1]), arguments[2]));
+						goto Addon;
+					}
+					else res = Somme(res, Mot.Soin(constValue(arguments[1])));
+					break;
+				// ================================================================================
+				// SON
+				// ================================================================================
+				case "son":
+					if (nbArgs < 2 || nbArgs > 4) goto Error;
+					if (nbArgs > 2)
+					{
+						res = Somme(res, Mot.Son(constValue(arguments[1]), constValue(arguments[2])));
+						goto Addon; // Mot clé supplémentaire ?
+					}
+					else res = Somme(res, Mot.Son(constValue(arguments[1])));
+					break;
+				// ================================================================================
+				// TERRE
+				// ================================================================================
+				case "terre":
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Manque des arguments
 
+					if (nbArgs > 2)
+					{
+						res = Somme(res, Mot.Terre(constValue(arguments[1]), arguments[2]));
+						goto Addon; // Mot clé supplémentaire ?
+					}
+					else res = Somme(res, Mot.Terre(constValue(arguments[1])));
+					break;
+				// ================================================================================
+				// PERMÉABLE
+				// ================================================================================
+				case "perméable":
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
+					if (nbArgs > 3)
+					{
+						res = Somme(res, Mot.Permeable(constValue(arguments[1]), nbAddons(s)));
+						goto Addon;
+					}
+					else res = Somme(res, Mot.Permeable(constValue(arguments[1])));
+					break;
+				// ================================================================================
+				// VIE PONDÉRÉ
+				// ================================================================================
+				case "vie pondéré":
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Manque des arguments
+
+					if (nbArgs > 2)
+					{
+						res = Somme(res, Mot.ViePondere(constValue(arguments[1]), arguments[2]));
+						goto Addon; // Mot clé supplémentaire ?
+					}
+					else res = Somme(res, Mot.ViePondere(constValue(arguments[1])));
+					break;
+
+				// ======== Vent (INCONNU)
+				case "vent": throw new NotImplementedException();
+
+				// ================================================================================
+				// DEFAULT -> Error
+				// ================================================================================
 				default:
 				Error: // ERREUR !
 					Console.WriteLine("Le sort \"" + s + "\" n'a pas été compris.");
 					throw new Exception("Unhandled Spell");
 
-				// ======== Addon ?
+				// ================================================================================
+				// ADDON
+				// ================================================================================
 				Addon:
-					if (nbArgs > 3) res = Somme(res, calculCout(arguments[3]));
+					if (nbArgs > 3) res = Somme(res, calculCout(arguments[arguments.Length - 1]));
 					break;
 			}
-
-			// Cout Cible
-			res = Somme(res, coutCible(arguments[0], (byte)constValue(arguments[1])));
 
 			return res;
 		}
