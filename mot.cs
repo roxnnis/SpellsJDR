@@ -170,6 +170,14 @@ namespace Projet
 			return res;
 		}
 		// ================================================================================
+		// SOIN STATUT
+		// ================================================================================
+		public static byte[] SoinStatut(byte chance){
+			byte[] res = new byte[3]{1,2,0};
+			res[0] += (byte) (chance/2);
+			res[2] = (byte) (chance*2);
+		}
+		// ================================================================================
 		// SON
 		// ================================================================================
 		public static byte[] Son(byte puissance)
@@ -193,6 +201,7 @@ namespace Projet
 			byte[] res = new byte[3] { 0, 2, 1 };
 			res[0] = (byte)(puissance / 3);
 			res[1] += (byte)(puissance / 5);
+			res[2] += (byte)(puissance / 4);
 			return res;
 		}
 		public static byte[] Terre(byte puissance, string temps)
@@ -203,8 +212,8 @@ namespace Projet
 			switch (indexTemps)
 			{
 				case 1:
-					res[1] += (byte)(M.constValue(temps) / 4);
-					res[2] += (byte)(puissance * (M.constValue(temps) + 1));
+					res[1] += (byte)(M.constValue(temps) /4);
+					res[2] += (byte)((puissance /4) * (M.constValue(temps)));
 					break;
 				case 2:
 					res = M.Somme(res, Aura(puissance));
