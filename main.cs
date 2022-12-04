@@ -510,6 +510,15 @@ namespace Projet
 					else res = Somme(res, Mot.Soin(constValue(arguments[1])));
 					break;
 				// ================================================================================
+				// SOIN STATUT
+				// ================================================================================
+				case "soin statut":
+					if (nbArgs < 2 || nbArgs > 3) goto Error;
+					
+					res = Somme(res, Mot.Soin(constValue(arguments[1])));
+					if(nbArgs > 2) goto Addon;
+					break;
+				// ================================================================================
 				// SON
 				// ================================================================================
 				case "son":

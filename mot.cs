@@ -170,31 +170,6 @@ namespace Projet
 			return res;
 		}
 		// ================================================================================
-		// SOIN STATUT
-		// ================================================================================
-		public static byte[] SoinStatut(byte chance){
-			byte[] res = new byte[3]{1,2,0};
-			res[0] += (byte) (chance/2);
-			res[2] = (byte) (chance*2);
-			return res;
-		}
-		// ================================================================================
-		// SON
-		// ================================================================================
-		public static byte[] Son(byte puissance)
-		{
-			byte[] res = new byte[3] { 1, 2, 0 };
-			res[0] += puissance;
-			return res;
-		}
-		public static byte[] Son(byte puissance, byte chance)
-		{
-			byte[] res = Son(puissance);
-			res[0] += chance;
-			res[2] += (byte)(chance / 3);
-			return res;
-		}
-		// ================================================================================
 		// TERRE
 		// ================================================================================
 		public static byte[] Terre(byte puissance)
@@ -332,6 +307,31 @@ namespace Projet
 			byte[] res = new byte[3] { 1, 1, 0 };
 			res[0] += (byte)(puissance / 4 + chance);
 			res[2] += (byte)(puissance / 2);
+			return res;
+		}
+		// ================================================================================
+		// SOIN STATUT
+		// ================================================================================
+		public static byte[] SoinStatut(byte chance){
+			byte[] res = new byte[3]{1,2,0};
+			res[0] += (byte) (chance/2);
+			res[2] = (byte) (chance*2);
+			return res;
+		}
+		// ================================================================================
+		// SON
+		// ================================================================================
+		public static byte[] Son(byte puissance)
+		{
+			byte[] res = new byte[3] { 1, 2, 0 };
+			res[0] += puissance;
+			return res;
+		}
+		public static byte[] Son(byte puissance, byte chance)
+		{
+			byte[] res = Son(puissance);
+			res[0] += chance;
+			res[2] += (byte)(chance / 3);
 			return res;
 		}
 
