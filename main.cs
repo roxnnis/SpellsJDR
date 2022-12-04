@@ -12,16 +12,21 @@ namespace Projet
 		{
 			Console.WriteLine("Bienvenue dans le SpellCalculator !");
 			byte choice;
-			while (true)
-			{
-				Console.WriteLine();
 
+			while(true) {
+				Console.WriteLine();
 				// Menu
 				choice = menu();
-
 				Console.WriteLine();
 				switch(choice){
-					case 1: afficher(calculCout(spell())); break;
+					case 0: HM.afficher(); break;
+					case 1: 
+						try{
+							afficher(calculCout(spell(), 0));
+						} catch(Exception e) {
+							Console.WriteLine(e.Message);
+						}
+						break;
 					case 2: listeMots(); break;
 					case 3: return;
 					default: 
@@ -85,7 +90,7 @@ namespace Projet
 			Console.WriteLine("Entité                                                  ");
 			Console.WriteLine("Objet          [Forme]                  <Distance>      ");
 			Console.WriteLine("Projectile     [Forme]                  <Distance>      ");
-			Console.WriteLine("Rayon          [Taille]                 <Distance>      ");
+			Console.WriteLine("Rayon          [Longueur]               [Taille]        ");
 			Console.WriteLine("Soi                                                     ");
 			Console.WriteLine("Zone           [Taille <= 5]            <Distance>      ");
 			Console.WriteLine();
@@ -111,6 +116,7 @@ namespace Projet
 		{
 			while (true)
 			{
+				Console.WriteLine("0) Dev v2");
 				Console.WriteLine("1) Écrire un sort");
 				Console.WriteLine("2) Afficher la liste des mots disponibles");
 				Console.WriteLine("3) Sortir");
@@ -118,6 +124,7 @@ namespace Projet
 				var choice = Console.ReadLine();
 				switch (choice)
 				{
+					case "0": return 0;
 					case "1": return 1;
 					case "2": return 2;
 					case "3": return 3;
@@ -209,6 +216,7 @@ namespace Projet
 			string[] res = list.ToArray();
 			return res;
 		}
+
 		/** <summary> Affiche les données d'un tableau </summary>
 			<param name="list"> Le tableau </param>
 			<typeparam name="T"> Le type du tableau </typeparam>
@@ -380,11 +388,7 @@ namespace Projet
 			// le nombre d'addons est calculable en comptant
 			// le nombre de parenthèses depuis la fin du sort
 			// X parenthèses valent à X-1 addons
-
-			// On a pas besoin de faire de tests supplémentaires
-			// La fonction n'est appelée que si certains mots sont compris
-			// L'arrêt se fera systématiquement sans faire de IOORException
-			while (s[s.Length - 2 - res] == ')') res++;
+			while (s.Length - 2 - res >= 0 && s[s.Length - 2 - res] == ')') res++;
 			return res;
 		}
 
@@ -393,10 +397,14 @@ namespace Projet
 			<exception cref="NotImplementedException"> Le mot clé n'est pas encore décrypté et donc incalculable </exception>
 			<exception> "Unhandled Spell" : Le sort n'a pas été compris </exception>
 		*/
-		public static byte[] calculCout(string s)
+		public static byte[] calculCout(string s, byte addons)
 		{
 			string motPrincipal = getMotPrincipal(s).ToLower();
 			string[] arguments = ToLower(getArguments(s));
+
+			// Compte du nombre d'addons
+			if(addons == 0)
+				addons = nbAddons(s);
 
 			// Compte du nombre d'arguments pour avoir le bon nombre de paramètres sur un mot clé donné
 			int nbArgs = arguments.Count();
@@ -409,7 +417,8 @@ namespace Projet
 
 			// Cout Cible
 			// Blacklist : Analyse (Aucune puissance)
-			res = Somme(res, coutCible(arguments[0], (byte)(new string[1] { "analyse" }.Contains(motPrincipal) ? 0 : (byte)constValue(arguments[1]))));
+			if(nbArgs > 1)
+				res = Somme(res, coutCible(arguments[0], (byte)(new string[1] { "analyse" }.Contains(motPrincipal) ? 0 : (byte)constValue(arguments[1]))));
 
 			// Cout element
 			switch (motPrincipal)
@@ -474,14 +483,10 @@ namespace Projet
 				// ================================================================================
 				case "foudre":
 					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
-					if (nbArgs > 3)
-					{
-						res = Somme(res, Mot.Foudre(constValue(arguments[1]), arguments[2], nbAddons(s)));
-						goto Addon;
-					}
 					if (nbArgs > 2)
-						res = Somme(res, Mot.Foudre(constValue(arguments[1]), arguments[2]));
-					else res = Somme(res, Mot.Foudre(constValue(arguments[1])));
+						res = Somme(res, Mot.Foudre(constValue(arguments[1]), addons, arguments[2]));
+					else res = Somme(res, Mot.Foudre(constValue(arguments[1]), addons));
+					if (nbArgs > 3) goto Addon;
 					break;
 				// ================================================================================
 				// GLACE
@@ -522,13 +527,9 @@ namespace Projet
 				// SON
 				// ================================================================================
 				case "son":
-					if (nbArgs < 2 || nbArgs > 4) goto Error;
-					if (nbArgs > 2)
-					{
+					if (nbArgs < 3 || nbArgs > 4) goto Error;
 						res = Somme(res, Mot.Son(constValue(arguments[1]), constValue(arguments[2])));
-						goto Addon; // Mot clé supplémentaire ?
-					}
-					else res = Somme(res, Mot.Son(constValue(arguments[1])));
+					if (nbArgs > 3) goto Addon; // Mot clé supplémentaire ?
 					break;
 				// ================================================================================
 				// TERRE
@@ -548,12 +549,8 @@ namespace Projet
 				// ================================================================================
 				case "perméable":
 					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
-					if (nbArgs > 3)
-					{
-						res = Somme(res, Mot.Permeable(constValue(arguments[1]), nbAddons(s)));
-						goto Addon;
-					}
-					else res = Somme(res, Mot.Permeable(constValue(arguments[1])));
+					res = Somme(res, Mot.Permeable(constValue(arguments[1]), addons));
+					if (nbArgs > 3) goto Addon;
 					break;
 				// ================================================================================
 				// VIE PONDÉRÉ
@@ -584,7 +581,7 @@ namespace Projet
 				// ADDON
 				// ================================================================================
 				Addon:
-					if (nbArgs > 3) res = Somme(res, calculCout(arguments[arguments.Length - 1]));
+					if (nbArgs > 3) res = Somme(res, calculCout(arguments[arguments.Length - 1], addons));
 					break;
 			}
 
