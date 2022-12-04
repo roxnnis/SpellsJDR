@@ -1,4 +1,3 @@
-namespace System;
 namespace Projet
 {
 	public class M
@@ -241,11 +240,11 @@ namespace Projet
 		/** <summary> Fait la somme entre 2 tableaux de <c>byte</c> de même taille</summary>
 			<param name="a"> Premier tableau </param>
 			<param name="b"> Second tableau </param>
-			<exception cref="IndexOutOfRangeException"> Exception quand les deux tableaux ne sont pas de même taille </exception>
+			<exception> Exception quand les deux tableaux ne sont pas de même taille </exception>
 		*/
 		public static byte[] Somme(byte[] a, byte[] b)
 		{
-			if(a.Length != b.Length) throw new Exception("Les deux tableaux ne sont pas de même taille", IndexOutOfRangeException);
+			if(a.Length != b.Length) throw new Exception("Les deux tableaux ne sont pas de même taille");
 			byte[] res = new byte[a.Length];
 
 			for (byte r = 0; r < a.Length; r++)

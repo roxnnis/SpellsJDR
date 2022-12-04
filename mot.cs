@@ -176,6 +176,7 @@ namespace Projet
 			byte[] res = new byte[3]{1,2,0};
 			res[0] += (byte) (chance/2);
 			res[2] = (byte) (chance*2);
+			return res;
 		}
 		// ================================================================================
 		// SON
