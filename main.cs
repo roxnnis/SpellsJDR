@@ -62,15 +62,13 @@ namespace Projet
 			Console.WriteLine("Glace          [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Poison         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
 			Console.WriteLine("Soin           [Cible] [Puissance <= 9] <Temps>  <Addon>");
-			Console.WriteLine("Soin Statut    [Cible] [Chance]                  <Addon>");
-			Console.WriteLine("Son            [Cible] [Puissance]      <Chance> <Addon>");
 			Console.WriteLine("Terre          [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Vent           [Cible] [Puissance]      <Temps>  <Addon> /!\\ Not Implemented Yet");
 			Console.WriteLine();
 			Console.WriteLine("=================== Éléments neutres ===================");
 			Console.WriteLine();
 			Console.WriteLine("Analyse        [Cible]                           <Addon>");
-			Console.WriteLine("Armure [Cible] [Puissance]              <Temps>  <Addon>");
+			Console.WriteLine("Armure         [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Esprit         [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Perméable      [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Vie Pondéré    [Cible] [Puissance]      <Temps>  <Addon>");
@@ -78,6 +76,8 @@ namespace Projet
 			Console.WriteLine("====================== Affliction ======================");
 			Console.WriteLine();
 			Console.WriteLine("Brûle          [Cible] [Puissance]      <Chance> <Addon>");
+			Console.WriteLine("Soin Statut    [Cible] [Chance]                  <Addon>");
+			Console.WriteLine("Son            [Cible] [Puissance]      <Chance> <Addon>");
 			Console.WriteLine();
 			Console.WriteLine("======================== Cibles ========================");
 			Console.WriteLine();
