@@ -5,7 +5,7 @@ namespace Projet
 		/** <summary>
 				<para> Fonction principale permettant le calcul des sorts donnés </para>
 				<para> Auteur : Roxnnis </para>
-				<para> Version : 1.1.2 </para>
+				<para> Version : 1.1.3 </para>
 			</summary>
 		*/
 		public static void Main()
@@ -80,9 +80,9 @@ namespace Projet
 			Console.WriteLine();
 			Console.WriteLine("====================== Affliction ======================");
 			Console.WriteLine();
-			Console.WriteLine("Brûle          [Cible] [Puissance]      <Chance> <Addon>");
-			Console.WriteLine("Soin Statut    [Cible] [Chance]                  <Addon>");
-			Console.WriteLine("Son            [Cible] [Puissance]      <Chance> <Addon>");
+			Console.WriteLine("Brûle          [Cible] [Puissance]      [Chance] <Addon>");
+			Console.WriteLine("Soin Statut    [Cible]                  [Chance] <Addon>");
+			Console.WriteLine("Son            [Cible] [Puissance]      [Chance] <Addon>");
 			Console.WriteLine();
 			Console.WriteLine("======================== Cibles ========================");
 			Console.WriteLine();
