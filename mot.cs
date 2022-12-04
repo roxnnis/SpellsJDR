@@ -77,16 +77,16 @@ namespace Projet
 		// ================================================================================
 		// FOUDRE
 		// ================================================================================
-		public static byte[] Foudre(byte puissance)
+		public static byte[] Foudre(byte puissance, byte nbAddons)
 		{
 			byte[] res = new byte[3] { 0, 1, 2 };
-			res[0] = (byte)(puissance / 5);
-			res[2] += puissance;
+			res[0] = (byte) (puissance / 5);
+			res[2] += (byte) (puissance + nbAddons);
 			return res;
 		}
-		public static byte[] Foudre(byte puissance, string temps)
+		public static byte[] Foudre(byte puissance, byte nbAddons, string temps)
 		{
-			byte[] res = Foudre(puissance);
+			byte[] res = Foudre(puissance, nbAddons);
 
 			// Temps
 			byte indexTemps = M.selectTemps(temps);
@@ -104,12 +104,6 @@ namespace Projet
 				default:
 					throw new Exception("TempsException : La variable de temps n'a pas été comprise.");
 			}
-			return res;
-		}
-		public static byte[] Foudre(byte puissance, string temps, byte nbAddons)
-		{
-			byte[] res = Foudre(puissance, temps);
-			res[2] += nbAddons;
 			return res;
 		}
 		// ================================================================================
@@ -248,19 +242,12 @@ namespace Projet
 		// ================================================================================
 		// Perméable
 		// ================================================================================
-		public static byte[] Permeable(byte puissance)
+		public static byte[] Permeable(byte puissance, byte nbAddons)
 		{
 			byte[] res = new byte[3] { 0, 0, 0 };
 			res[0] = (byte)(Math.Pow(puissance, 3));
-			res[1] = (byte)(puissance * 2);
+			res[1] = (byte)(puissance * 2 + nbAddons);
 			res[2] = (byte)(res[1] * 2);
-			return new byte[3];
-		}
-		public static byte[] Permeable(byte puissance, byte nbAddons)
-		{
-			byte[] res = Permeable(puissance);
-			res[1] += nbAddons;
-			res[2] += (byte)(nbAddons * 2);
 			return res;
 		}
 		// ================================================================================
@@ -321,16 +308,10 @@ namespace Projet
 		// ================================================================================
 		// SON
 		// ================================================================================
-		public static byte[] Son(byte puissance)
-		{
-			byte[] res = new byte[3] { 1, 2, 0 };
-			res[0] += puissance;
-			return res;
-		}
 		public static byte[] Son(byte puissance, byte chance)
 		{
-			byte[] res = Son(puissance);
-			res[0] += chance;
+			byte[] res = new byte[3] { 1, 2, 0 };
+			res[0] += (byte) (puissance + chance);
 			res[2] += (byte)(chance / 3);
 			return res;
 		}
@@ -556,8 +537,6 @@ namespace Projet
 			return res;
 		}
 		public static byte[] Ligne() { return new byte[3] { 1, 1, 0 }; }
-
-
 
 		// --------------------------------------------------------------------------------
 		// ----------------------------------- Le Temps -----------------------------------
