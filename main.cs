@@ -1,8 +1,13 @@
+namespace System;
 namespace Projet
 {
 	public class M
 	{
-		/** <summary> Fonction principale permettant le calcul des sorts donnés </summary>
+		/** <summary>
+				<para> Fonction principale permettant le calcul des sorts donnés </para>
+				<para> Auteur : Roxnnis </para>
+				<para> Version : 1.1.2 </para>
+			</summary>
 		*/
 		public static void Main()
 		{
@@ -14,17 +19,22 @@ namespace Projet
 
 				// Menu
 				choice = menu();
-				
+
 				Console.WriteLine();
 				switch(choice){
 					case 1: afficher(calculCout(spell())); break;
 					case 2: listeMots(); break;
 					case 3: return;
-					default: Console.WriteLine("Le choix n'a pas été compris.");break;
+					default: 
+						Console.WriteLine("Le choix n'a pas été compris.");
+						break;
 				}
 			}
 		}
 
+		/** <summary> Fonction qui gère les impulsions au clavier de l'utilisateur pour un sort</summary>
+			<returns> L'écriture du sort envoyée par l'utilisateur
+		*/
 		public static string spell(){
 			Console.WriteLine();
 				Console.WriteLine("Veuillez entrer un sort : ");
@@ -39,6 +49,7 @@ namespace Projet
 				return sort;
 		}
 
+		/** <summary> Affiche la liste des mots-clés </summary> */
 		public static void listeMots(){
 			Console.WriteLine("================= Arguments numériques =================");
 			Console.WriteLine();
@@ -52,7 +63,7 @@ namespace Projet
 			Console.WriteLine("Glace          [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Poison         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
 			Console.WriteLine("Soin           [Cible] [Puissance <= 9] <Temps>  <Addon>");
-			Console.WriteLine("Soin Statut    [Cible] [Chance]                  <Addon> /!\\ Not Implemented Yet");
+			Console.WriteLine("Soin Statut    [Cible] [Chance]                  <Addon>");
 			Console.WriteLine("Son            [Cible] [Puissance]      <Chance> <Addon>");
 			Console.WriteLine("Terre          [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Vent           [Cible] [Puissance]      <Temps>  <Addon> /!\\ Not Implemented Yet");
@@ -95,6 +106,8 @@ namespace Projet
 			Console.WriteLine("Aura                                                    ");
 			Console.WriteLine("Passif                                                  ");
 		}
+
+		/** <summary> Le menu de l'application </summary> */
 		public static byte menu()
 		{
 			while (true)
@@ -102,6 +115,7 @@ namespace Projet
 				Console.WriteLine("1) Écrire un sort");
 				Console.WriteLine("2) Afficher la liste des mots disponibles");
 				Console.WriteLine("3) Sortir");
+				Console.WriteLine();
 				var choice = Console.ReadLine();
 				switch (choice)
 				{
@@ -196,6 +210,11 @@ namespace Projet
 			string[] res = list.ToArray();
 			return res;
 		}
+		/** <summary> Affiche les données d'un tableau </summary>
+			<param name="list"> Le tableau </param>
+			<typeparam name="T"> Le type du tableau </typeparam>
+			<remarks> Lorsque l'on a un tableau de <c>byte</c> avec 3 éléments, il le comprend comme affichage des coûts. </remarks>
+		*/
 		public static void afficher<T>(T[] list) where T : IComparable<T>
 		{
 			// Afficher le coût d'un sort
@@ -208,19 +227,29 @@ namespace Projet
 			// Afficher les autres tableaux
 			else foreach (T elem in list) Console.WriteLine(elem);
 		}
+
+		/** <summary> Applique une transformation en caractères minuscules à un tableau de chaîne de caractères </summary>
+			<param name="a"> Le tableau </param>
+		*/
 		public static string[] ToLower(string[] a)
 		{
 			List<string> res = new List<string>();
 			foreach (string elem in a) res.Add(elem.ToLower());
 			return res.ToArray();
 		}
+
+		/** <summary> Fait la somme entre 2 tableaux de <c>byte</c> de même taille</summary>
+			<param name="a"> Premier tableau </param>
+			<param name="b"> Second tableau </param>
+			<exception cref="IndexOutOfRangeException"> Exception quand les deux tableaux ne sont pas de même taille </exception>
+		*/
 		public static byte[] Somme(byte[] a, byte[] b)
 		{
+			if(a.Length != b.Length) throw new Exception("Les deux tableaux ne sont pas de même taille", IndexOutOfRangeException);
 			byte[] res = new byte[a.Length];
 
 			for (byte r = 0; r < a.Length; r++)
 				res[r] = (byte)(a[r] + b[r]);
-
 			return res;
 		}
 
@@ -232,6 +261,10 @@ namespace Projet
 			return byte.Parse(c.Split(" ", 2)[1]);
 		}
 
+		/** <summary> Détecte une cible par rapport à l'écriture du sort </summary>
+			<param name="cible"> L'écriture de la cible </param>
+			<returns> L'index représentant la cible </returns>
+		*/
 		public static byte selectCible(string cible)
 		{
 			if (cible.StartsWith("contact(")) return 1;
@@ -244,6 +277,11 @@ namespace Projet
 			else return 0;
 		}
 
+		/** <summary> Calcul du coût de la cible </summary>
+			<param name="cible"> L'écriture de la cible </param>
+			<param name="puissance"> La puissance indiquée du mot clé principal </param>
+			<exception> Exception quand la cible n'est pas reconnue. </exception>
+		*/
 		public static byte[] coutCible(string cible, byte puissance)
 		{
 			byte[] res = new byte[3] { 0, 0, 0 };
@@ -263,6 +301,10 @@ namespace Projet
 			return res;
 		}
 
+		/** <summary> Détecte une forme par rapport à l'écriture du sort </summary>
+			<param name="forme"> L'écriture de la forme </param>
+			<returns> L'index représentant la forme </returns>
+		*/
 		public static byte selectForme(string forme)
 		{
 			if (forme.StartsWith("boule(")) return 1;
@@ -276,6 +318,10 @@ namespace Projet
 			else return 0;
 		}
 
+		/** <summary> Calcul du coût de la forme </summary>
+			<param name="forme"> L'écriture de la forme </param>
+			<exception> Exception quand la forme n'est pas reconnue. </exception>
+		*/
 		public static byte[] coutForme(string forme)
 		{
 			byte[] res = new byte[3] { 0, 0, 0 };
@@ -296,6 +342,10 @@ namespace Projet
 			return res;
 		}
 
+		/** <summary> Détecte la façon de gérer le temps par rapport à l'écriture du sort </summary>
+			<param name="temps"> L'écriture de la temps </param>
+			<returns> L'index représentant la temps </returns>
+		*/
 		public static byte selectTemps(string temps)
 		{
 			if (temps.StartsWith("constante")) return 1;
@@ -321,12 +371,29 @@ namespace Projet
 			return res;
 		}
 
+		/** <summary> Calcul du nombre d'extensions du sort </summary>
+			<param name="s"> L'écriture du sort </param>
+		*/
 		public static byte nbAddons(string s)
 		{
 			byte res = 0;
-			while (res < s.Length && s[s.Length - 2 - res] == ')') res++;
+			// La façon dont sont écrits les sorts fait que
+			// le nombre d'addons est calculable en comptant
+			// le nombre de parenthèses depuis la fin du sort
+			// X parenthèses valent à X-1 addons
+
+			// On a pas besoin de faire de tests supplémentaires
+			// La fonction n'est appelée que si certains mots sont compris
+			// L'arrêt se fera systématiquement sans faire de IOORException
+			while (s[s.Length - 2 - res] == ')') res++;
 			return res;
 		}
+
+		/** <summary> Fonction importante : Calcul le coût d'un sort </summary>
+			<param name="s"> L'écriture du sort </param>
+			<exception cref="NotImplementedException"> Le mot clé n'est pas encore décrypté et donc incalculable </exception>
+			<exception> "Unhandled Spell" : Le sort n'a pas été compris </exception>
+		*/
 		public static byte[] calculCout(string s)
 		{
 			string motPrincipal = getMotPrincipal(s).ToLower();
