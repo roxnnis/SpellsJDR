@@ -348,7 +348,7 @@ namespace Projet
 
 			// Coût en mémoire des constantes dans les arguments de la cible
 			res[1] += M.coutMemoireConst(args);
-			
+
 			if (args.Length == 2) res[2] = (byte)(M.constValue(args[1]) / 3);
 			res = M.Somme(res, M.coutForme(args[0]));
 			return res;
@@ -424,7 +424,7 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coût
-			byte nb = (byte)(args.Length > 2 ? M.constValue(args[1]) : 1);
+			byte nb = (byte)(args.Length > 1 ? M.constValue(args[1]) : 1);
 			res[0] = (byte)(nb * M.constValue(args[0]) / 5);
 			res[2] = (byte)(nb - 1);
 
@@ -462,7 +462,7 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coût
-			byte nb = (byte)(args.Length > 2 ? M.constValue(args[1]) : 1);
+			byte nb = (byte)(args.Length > 1 ? M.constValue(args[1]) : 1);
 			res[0] = (byte)(nb * M.constValue(args[0]) / 3);
 			res[2] = (byte)(2 * (nb - 1));
 
@@ -501,7 +501,7 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coût
-			byte nb = (byte)(args.Length > 2 ? M.constValue(args[1]) : 1);
+			byte nb = (byte)(args.Length > 1 ? M.constValue(args[1]) : 1);
 			res[0] = (byte)(nb * M.constValue(args[0]) / 3);
 			res[2] = (byte)(3 * (nb - 1));
 			return res;
@@ -520,7 +520,7 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coût
-			byte nb = (byte)(args.Length > 2 ? M.constValue(args[1]) : 1);
+			byte nb = (byte)(args.Length > 1 ? M.constValue(args[1]) : 1);
 			res[0] = (byte)(nb * M.constValue(args[0]) / 3);
 			res[2] = (byte)(3 * (nb - 1));
 			return res;
@@ -540,8 +540,8 @@ namespace Projet
 
 			// Coût
 			res[0] = (byte)(M.constValue(args[0]) / 2);
-			res[1] += (byte)(args.Length > 2 ? M.constValue(args[1]) / 2 : 0);
-			res[2] = (byte)(args.Length > 2 ? M.constValue(args[1]) / 2 : 0);
+			res[1] += (byte)(args.Length > 1 ? M.constValue(args[1]) / 2 : 0);
+			res[2] = (byte)(args.Length > 1 ? M.constValue(args[1]) / 2 : 0);
 			return res;
 		}
 		public static byte[] Ligne() { return new byte[3] { 1, 1, 0 }; }
