@@ -112,9 +112,9 @@ namespace Projet
 		public static byte[] Glace(byte puissance)
 		{
 			// Coût
-			byte[] res = new byte[3] { 0, 0, 0 };
-			res[0] = (byte)(puissance / 4 + 1);
-			res[1] = (byte)(puissance / 3 + 4);
+			byte[] res = new byte[3] { 1, 4, 0 };
+			res[0] += (byte)(puissance / 4);
+			res[1] += (byte)(puissance / 3);
 			return res;
 		}
 		public static byte[] Glace(byte puissance, string temps)
@@ -345,6 +345,10 @@ namespace Projet
 
 			// Calcul
 			byte[] res = new byte[3] { 1, 1, 0 };
+
+			// Coût en mémoire des constantes dans les arguments de la cible
+			res[1] += M.coutMemoireConst(args);
+			
 			if (args.Length == 2) res[2] = (byte)(M.constValue(args[1]) / 3);
 			res = M.Somme(res, M.coutForme(args[0]));
 			return res;
@@ -358,6 +362,10 @@ namespace Projet
 
 			// Calcul
 			byte[] res = new byte[3] { 1, 1, 0 };
+
+			// Coût en mémoire des constantes dans les arguments de la cible
+			res[1] += M.coutMemoireConst(args);
+
 			if (args.Length == 2) res[2] = (byte)(M.constValue(args[1]) / 3);
 			res = M.Somme(res, M.coutForme(args[0]));
 
@@ -474,7 +482,7 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coût
-			byte nb = (byte)(args.Length > 2 ? M.constValue(args[1]) : 1);
+			byte nb = (byte)(args.Length > 1 ? M.constValue(args[1]) : 1);
 			res[0] = (byte)(nb * M.constValue(args[0]) / 4);
 			res[2] = (byte)(2 * (nb - 1));
 			return res;
