@@ -77,16 +77,16 @@ namespace Projet
 		// ================================================================================
 		// FOUDRE
 		// ================================================================================
-		public static byte[] Foudre(byte puissance)
+		public static byte[] Foudre(byte puissance, byte nbAddons)
 		{
 			byte[] res = new byte[3] { 0, 1, 2 };
-			res[0] = (byte)(puissance / 5);
-			res[2] += puissance;
+			res[0] = (byte) (puissance / 5);
+			res[2] += (byte) (puissance + nbAddons);
 			return res;
 		}
-		public static byte[] Foudre(byte puissance, string temps)
+		public static byte[] Foudre(byte puissance, byte nbAddons, string temps)
 		{
-			byte[] res = Foudre(puissance);
+			byte[] res = Foudre(puissance, nbAddons);
 
 			// Temps
 			byte indexTemps = M.selectTemps(temps);
@@ -106,21 +106,15 @@ namespace Projet
 			}
 			return res;
 		}
-		public static byte[] Foudre(byte puissance, string temps, byte nbAddons)
-		{
-			byte[] res = Foudre(puissance, temps);
-			res[2] += nbAddons;
-			return res;
-		}
 		// ================================================================================
 		// GLACE
 		// ================================================================================
 		public static byte[] Glace(byte puissance)
 		{
 			// Coût
-			byte[] res = new byte[3] { 0, 0, 0 };
-			res[0] = (byte)(puissance / 4 + 1);
-			res[1] = (byte)(puissance / 3 + 4);
+			byte[] res = new byte[3] { 1, 4, 0 };
+			res[0] += (byte)(puissance / 4);
+			res[1] += (byte)(puissance / 3);
 			return res;
 		}
 		public static byte[] Glace(byte puissance, string temps)
@@ -248,19 +242,12 @@ namespace Projet
 		// ================================================================================
 		// Perméable
 		// ================================================================================
-		public static byte[] Permeable(byte puissance)
+		public static byte[] Permeable(byte puissance, byte nbAddons)
 		{
 			byte[] res = new byte[3] { 0, 0, 0 };
 			res[0] = (byte)(Math.Pow(puissance, 3));
-			res[1] = (byte)(puissance * 2);
+			res[1] = (byte)(puissance * 2 + nbAddons);
 			res[2] = (byte)(res[1] * 2);
-			return new byte[3];
-		}
-		public static byte[] Permeable(byte puissance, byte nbAddons)
-		{
-			byte[] res = Permeable(puissance);
-			res[1] += nbAddons;
-			res[2] += (byte)(nbAddons * 2);
 			return res;
 		}
 		// ================================================================================
@@ -321,16 +308,10 @@ namespace Projet
 		// ================================================================================
 		// SON
 		// ================================================================================
-		public static byte[] Son(byte puissance)
-		{
-			byte[] res = new byte[3] { 1, 2, 0 };
-			res[0] += puissance;
-			return res;
-		}
 		public static byte[] Son(byte puissance, byte chance)
 		{
-			byte[] res = Son(puissance);
-			res[0] += chance;
+			byte[] res = new byte[3] { 1, 2, 0 };
+			res[0] += (byte) (puissance + chance);
 			res[2] += (byte)(chance / 3);
 			return res;
 		}
@@ -364,6 +345,10 @@ namespace Projet
 
 			// Calcul
 			byte[] res = new byte[3] { 1, 1, 0 };
+
+			// Coût en mémoire des constantes dans les arguments de la cible
+			res[1] += M.coutMemoireConst(args);
+
 			if (args.Length == 2) res[2] = (byte)(M.constValue(args[1]) / 3);
 			res = M.Somme(res, M.coutForme(args[0]));
 			return res;
@@ -377,6 +362,10 @@ namespace Projet
 
 			// Calcul
 			byte[] res = new byte[3] { 1, 1, 0 };
+
+			// Coût en mémoire des constantes dans les arguments de la cible
+			res[1] += M.coutMemoireConst(args);
+
 			if (args.Length == 2) res[2] = (byte)(M.constValue(args[1]) / 3);
 			res = M.Somme(res, M.coutForme(args[0]));
 
@@ -435,7 +424,7 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coût
-			byte nb = (byte)(args.Length > 2 ? M.constValue(args[1]) : 1);
+			byte nb = (byte)(args.Length > 1 ? M.constValue(args[1]) : 1);
 			res[0] = (byte)(nb * M.constValue(args[0]) / 5);
 			res[2] = (byte)(nb - 1);
 
@@ -473,7 +462,7 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coût
-			byte nb = (byte)(args.Length > 2 ? M.constValue(args[1]) : 1);
+			byte nb = (byte)(args.Length > 1 ? M.constValue(args[1]) : 1);
 			res[0] = (byte)(nb * M.constValue(args[0]) / 3);
 			res[2] = (byte)(2 * (nb - 1));
 
@@ -493,7 +482,7 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coût
-			byte nb = (byte)(args.Length > 2 ? M.constValue(args[1]) : 1);
+			byte nb = (byte)(args.Length > 1 ? M.constValue(args[1]) : 1);
 			res[0] = (byte)(nb * M.constValue(args[0]) / 4);
 			res[2] = (byte)(2 * (nb - 1));
 			return res;
@@ -512,7 +501,7 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coût
-			byte nb = (byte)(args.Length > 2 ? M.constValue(args[1]) : 1);
+			byte nb = (byte)(args.Length > 1 ? M.constValue(args[1]) : 1);
 			res[0] = (byte)(nb * M.constValue(args[0]) / 3);
 			res[2] = (byte)(3 * (nb - 1));
 			return res;
@@ -531,7 +520,7 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coût
-			byte nb = (byte)(args.Length > 2 ? M.constValue(args[1]) : 1);
+			byte nb = (byte)(args.Length > 1 ? M.constValue(args[1]) : 1);
 			res[0] = (byte)(nb * M.constValue(args[0]) / 3);
 			res[2] = (byte)(3 * (nb - 1));
 			return res;
@@ -551,13 +540,11 @@ namespace Projet
 
 			// Coût
 			res[0] = (byte)(M.constValue(args[0]) / 2);
-			res[1] += (byte)(args.Length > 2 ? M.constValue(args[1]) / 2 : 0);
-			res[2] = (byte)(args.Length > 2 ? M.constValue(args[1]) / 2 : 0);
+			res[1] += (byte)(args.Length > 1 ? M.constValue(args[1]) / 2 : 0);
+			res[2] = (byte)(args.Length > 1 ? M.constValue(args[1]) / 2 : 0);
 			return res;
 		}
 		public static byte[] Ligne() { return new byte[3] { 1, 1, 0 }; }
-
-
 
 		// --------------------------------------------------------------------------------
 		// ----------------------------------- Le Temps -----------------------------------
