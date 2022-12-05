@@ -5,7 +5,7 @@ namespace Projet
 		/** <summary>
 				<para> Fonction principale permettant le calcul des sorts donnés </para>
 				<para> Auteur : Roxnnis </para>
-				<para> Version : 1.1.3 </para>
+				<para> Version : 2.0.0 (Dev) </para>
 			</summary>
 		*/
 		public static void Main()
@@ -14,12 +14,13 @@ namespace Projet
 			byte choice;
 
 			while(true) {
+				// (HM.Arg) Enum.Parse(typeof(HM.Arg), "Puissance")
 				Console.WriteLine();
 				// Menu
 				choice = menu();
 				Console.WriteLine();
 				switch(choice){
-					case 0: HM.afficher(); break;
+					case 0: HM.afficherCostTable(); break;
 					case 1: 
 						try{
 							afficher(calculCout(spell(), 0));
@@ -65,7 +66,6 @@ namespace Projet
 			Console.WriteLine("Feu            [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Foudre         [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Glace          [Cible] [Puissance]      <Temps>  <Addon>");
-			Console.WriteLine("Poison         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
 			Console.WriteLine("Soin           [Cible] [Puissance <= 9] <Temps>  <Addon>");
 			Console.WriteLine("Terre          [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Vent           [Cible] [Puissance]      <Temps>  <Addon> /!\\ Not Implemented Yet");
@@ -81,6 +81,8 @@ namespace Projet
 			Console.WriteLine("====================== Affliction ======================");
 			Console.WriteLine();
 			Console.WriteLine("Brûle          [Cible] [Puissance]      [Chance] <Addon>");
+			Console.WriteLine("Poison         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
+			Console.WriteLine("Saigne         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
 			Console.WriteLine("Soin Statut    [Cible]                  [Chance] <Addon>");
 			Console.WriteLine("Son            [Cible] [Puissance]      [Chance] <Addon>");
 			Console.WriteLine();
