@@ -20,14 +20,14 @@ namespace Projet
 
 		/// <summary> Classe contenant les coûts fixes et variables d'un mot clé </summary>
 		public class Cout{
-			public record fixe(int calcul,int memoire, int energie){
+			public record Fixe(int calcul,int memoire, int energie){
 				internal int mc = calcul;
 				internal int mm = memoire;
 				internal int me = energie;
 			};
 
 			/// <summary> Coûts fixes du mot clé </summary>
-			public fixe cf;
+			public Fixe cf;
 
 			/// <summary> Coûts variables du mot clé </summary>
 			public string cv;
@@ -87,7 +87,7 @@ namespace Projet
 		/// <summary> Dictionnaire contenant la description des coûts fixes et variables pour un mot clé donné </summary>
 		public static Dictionary<Cle, Cout> costTable = new Dictionary<Cle, Cout>(){
 			// ================= Arguments numériques =================
-			{Cle.Constante,   new Cout(0,0,0, "MM{Valeur/5}")},
+			{Cle.Constante,   new Cout(0,0,0,  "MM{Valeur/5}")},
 			// ================== Éléments  naturels ==================
 			{Cle.Eau,         new Cout(0,0,0,  "MC{Puissance/4} MM{Puissance/5} ME{Puissance/3+Temps/4}")},
 			{Cle.Feu,         new Cout(1,1,0,  "MC{Puissance/2} ME{Temps/5}")},
@@ -156,13 +156,14 @@ namespace Projet
 			<param name="s"> L'écriture du sort </param>
 			<returns> La clé correspondante </returns>
 		*/
-		public static Cle getClePrincipal(string s){return Cle.Analyse;}
+		//public static Cle getClePrincipal(string s){}
 
 		/** <summary> Fonction importante : Calcul du coût du sort </summary>
 			<param name="s"> L'écriture du sort </param>
 		*/
 		public static void Main(string s) {
-			Cle mp = getClePrincipal(s); // Récupère le mot principal
+			Cle mp = Cle.Contact;
+			// = getClePrincipal(s); // Récupère le mot principal
 
 			// Vérifie si le mot principal existe dans la liste.
 			if(!ecriture.ContainsKey(mp)) throw new Exception("Cle non supporté.");
@@ -173,18 +174,21 @@ namespace Projet
 			if(result != null)
 				foreach(Arg elem in result){
 				switch(elem){
+					// Arguments obligatoires
 					case Arg.Valeur :
 					case Arg.Cible :
 					case Arg.Puissance :
-					case Arg.Temps :
-					case Arg.Addon :
 					case Arg.Chance :
 					case Arg.Forme :
-					case Arg.Distance :
 					case Arg.Taille :
 					case Arg.Longueur :
+					// Arguments optionnels
+					case Arg.Temps :
+					case Arg.Addon :
+					case Arg.Distance :
 					case Arg.Nombre :
 					case Arg.Propagation :
+					// Arguments spéciaux
 					case Arg.MC :
 					case Arg.MM :
 					case Arg.ME :
