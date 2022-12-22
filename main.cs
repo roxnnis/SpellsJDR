@@ -1,106 +1,58 @@
 namespace Projet
 {
-	using System;
 	public class M
 	{
 		/** <summary>
-				<para> Fonction principale </para>
+				<para> Fonction principale permettant le calcul des sorts donnés </para>
 				<para> Auteur : Roxnnis </para>
-				<para> Version : 1.2 </para>
+				<para> Version : 2.0.0 (Dev) </para>
 			</summary>
 		*/
 		public static void Main()
 		{
 			Console.WriteLine("Bienvenue dans le SpellCalculator !");
+			byte choice;
 
-			byte choice; // Choix de l'utilisateur
-			bool isFinished = false; // Détection de sortie de programme
-
-			while(!isFinished) {
-				// Affichage du menu ===============
+			while(true) {
+				// (HM.Arg) Enum.Parse(typeof(HM.Arg), "Puissance")
 				Console.WriteLine();
-				afficherMenu();
+				// Menu
+				choice = menu();
 				Console.WriteLine();
-
-				// Récupération du choix ===========
-				choice = recupererChoix();
-				Console.WriteLine();
-				
-				// Traitement du choix =============
-				isFinished = traiterChoix(choice);
+				switch(choice){
+					case 0: HM.Main(); break;
+					case 1: 
+						try{
+							afficher(calculCout(spell(), 0));
+						} catch(Exception e) {
+							Console.WriteLine(e.Message);
+						}
+						break;
+					case 2: listeMots(); break;
+					case 3: return;
+					default: 
+						Console.WriteLine("Le choix n'a pas été compris.");
+						break;
+				}
 			}
-			// Message de fin de programme
-			Console.WriteLine("Au revoir :D");
 		}
 
-		/** <summary> Afficher le menu </summary> */
-		public static void afficherMenu(){
-			Console.WriteLine("1) Écrire un sort");
-			Console.WriteLine("2) Afficher la liste des mots disponibles");
-			Console.WriteLine("3) Sortir");
-		}
-
-		/** <summary> Récupère le choix de l'utilisateur </summary> */
-		public static byte recupererChoix()
-		{
-			string choice = Console.ReadLine(); // Lecture de l'entrée standard
-			byte res = 0;
-			switch (choice)
-			{
-					case "1": case "2": case "3":
-						res = byte.Parse(choice); break;
-					default: break;
-			}
-			return res;
-		}
-
-		/** <summary> Traite le choix de l'utilisateur </summary> */
-		public static bool traiterChoix(byte choice){
-			bool fin = false;
-			switch(choice){
-				// Ecrire un sort
-				case 1:
-					string sort = recupererSort();
-					try{
-						byte[3] cout = calculCout(sort);
-						afficher(cout);
-					} catch(Exception e) {
-						Console.WriteLine(e.Message);
-					}
-					break;
-
-				// Afficher la liste des clés et arguments
-				case 2:
-					listeMots();
-					break;
-
-				// Fin de programme
-				case 3: 
-					fin = true;
-					break;
-
-				// Le choix est différent
-				default:
-					Console.WriteLine("Le choix n'a pas été compris.");
-					break;
-			}
-			return fin;
-		}
-
-		/** <summary> Gère les impulsions au clavier de l'utilisateur pour un sort </summary>
-			<returns> L'écriture du sort envoyée par l'utilisateur </returns>
+		/** <summary> Fonction qui gère les impulsions au clavier de l'utilisateur pour un sort</summary>
+			<returns> L'écriture du sort envoyée par l'utilisateur
 		*/
-		public static string recupererSort(){
-			var sort;
-			do
-			{
-				Console.WriteLine("Veuillez entrer un sort :");
-				sort = Console.ReadLine();
+		public static string spell(){
+			Console.WriteLine();
+				Console.WriteLine("Veuillez entrer un sort : ");
+				var sort = Console.ReadLine();
+				while (sort == "" || sort == null)
+				{
+					Console.WriteLine();
+					Console.WriteLine("Veuillez entrer un sort : ");
+					sort = Console.ReadLine();
+				}
 				Console.WriteLine();
-			} while (sort == "" || sort == null);
-			return sort;
+				return sort;
 		}
-
 
 		/** <summary> Affiche la liste des mots-clés </summary> */
 		public static void listeMots(){
@@ -116,6 +68,7 @@ namespace Projet
 			Console.WriteLine("Glace          [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Soin           [Cible] [Puissance <= 9] <Temps>  <Addon>");
 			Console.WriteLine("Terre          [Cible] [Puissance]      <Temps>  <Addon>");
+			Console.WriteLine("Vent           [Cible] [Puissance]      <Temps>  <Addon> /!\\ Not Implemented Yet");
 			Console.WriteLine();
 			Console.WriteLine("=================== Éléments neutres ===================");
 			Console.WriteLine();
@@ -128,6 +81,8 @@ namespace Projet
 			Console.WriteLine("====================== Affliction ======================");
 			Console.WriteLine();
 			Console.WriteLine("Brûle          [Cible] [Puissance]      [Chance] <Addon>");
+			Console.WriteLine("Poison         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
+			Console.WriteLine("Saigne         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
 			Console.WriteLine("Soin Statut    [Cible]                  [Chance] <Addon>");
 			Console.WriteLine("Son            [Cible] [Puissance]      [Chance] <Addon>");
 			Console.WriteLine();
@@ -158,11 +113,33 @@ namespace Projet
 			Console.WriteLine("Passif                                                  ");
 		}
 
-		/**	<summary> Décompose un sort en blocs contenant le mot et ses arguments</summary>
+		/** <summary> Le menu de l'application </summary> */
+		public static byte menu()
+		{
+			while (true)
+			{
+				Console.WriteLine("0) Dev v2");
+				Console.WriteLine("1) Écrire un sort");
+				Console.WriteLine("2) Afficher la liste des mots disponibles");
+				Console.WriteLine("3) Sortir");
+				Console.WriteLine();
+				var choice = Console.ReadLine();
+				switch (choice)
+				{
+					case "0": return 0;
+					case "1": return 1;
+					case "2": return 2;
+					case "3": return 3;
+					default: break;
+				}
+			}
+		}
+
+		/**	<summary> Sépare chaque mot du sort en blocs contenant le mot et ses arguments</summary>
 			<param name="e">L'écriture du sort</param>
 			<returns>La liste des mots-clés avec leurs arguments composant le sort</returns>
 		*/
-		public static string[] decomposerSort(string e)
+		public static string[] flatSpell(string e)
 		{
 			Dictionary<int, string> words = new Dictionary<int, string>() { { 0, "" } }; // Mots trouvés
 			List<int> writable = new List<int>() { 0 }; // Indice des mots où l'on peut écrire (Non fermé par une ')')
@@ -170,20 +147,36 @@ namespace Projet
 			for (int i = 0; i < e.Length; i++)
 			{
 				bool addWritable = false;
-
-				if(e[i] == ')'){
-					writable.RemoveAt(writable.Count - 1);
-				} else if(e[i] == ',' || e[i] == '(') {
-					if(e[i] == ',') writable.RemoveAt(writable.Count - 1); // Dernier mot de la liste interdit à l'écriture
-					words.Add(words.Count, "");
-					addWritable = true;
-				}
-				foreach (KeyValuePair<int, string> word in words)
+				switch (e[i])
 				{
-					if (writable.Contains(word.Key) && !((words[word.Key] == "") && e[i] == ' ')) // Vérifie si le mot peut être complété (Droit d'écriture)
-						words[word.Key] += e[i]; // Ajoute la lettre à la suite
+					// Cas : Ajout d'un argument
+					case ',':
+						writable.RemoveAt(writable.Count - 1); // Dernier mot de la liste interdit à l'écriture
+						goto LPAREN;
+
+					// Cas : Déclaration d'arguments
+					case '(':
+					LPAREN:
+						words.Add(words.Count, "");
+						addWritable = true;
+						goto default;
+
+					// Cas : Fermeture d'arguments
+					case ')':
+						writable.RemoveAt(writable.Count - 1); // Dernier mot de la liste interdit à l'écriture
+						goto default;
+
+					// Cas par défaut : Ecriture d'une lettre
+					default:
+						foreach (KeyValuePair<int, string> word in words)
+						{
+							if (writable.Contains(word.Key) && !((words[word.Key] == "") && e[i] == ' ')) // Vérifie si le mot peut être complété (Droit d'écriture)
+								words[word.Key] += e[i]; // Ajoute la lettre à la suite
+						}
+						if (addWritable) writable.Add(words.Count - 1);
+						break;
 				}
-				if (addWritable) writable.Add(words.Count - 1);
+
 			}
 			string[] res = new string[words.Count]; // Résultat de la fonction
 			foreach (KeyValuePair<int, string> word in words)
@@ -197,7 +190,7 @@ namespace Projet
 			<param name="s"> L'écriture du sort </param>
 			<returns> Le mot-clé principal </returns>
 		*/
-		public static string recupererClePrincipale(string s)
+		public static string getMotPrincipal(string s)
 		{
 			string res = ""; int i = 0;
 			while (s.Length > i && s[i] != '(') res += s[i++];
@@ -205,12 +198,12 @@ namespace Projet
 		}
 
 		/**	<summary> Obtenir les arguments du mot-clé principal </summary>
-			<param name="s"> L'écriture du sort </param>
+			<param name="s"> L'écriture du sort</param>
 			<returns>La liste d'arguments du mot-clé principal</returns>
 		*/
-		public static string[] recupererArguments(string s)
+		public static string[] getArguments(string s)
 		{
-			string[] e = decomposerSort(s);
+			string[] e = flatSpell(s);
 			List<string> list = new List<string>(); // Résultat sous forme de liste
 
 			for (int i = 1; i < e.Length; i++)
@@ -222,7 +215,7 @@ namespace Projet
 					if (current[j] == '(' || current[j] == ',') i++;
 			}
 
-			string[] res = list.ToArray(); // Transformation en tableau
+			string[] res = list.ToArray();
 			return res;
 		}
 
@@ -298,7 +291,7 @@ namespace Projet
 			<param name="puissance"> La puissance indiquée du mot clé principal </param>
 			<exception> Exception quand la cible n'est pas reconnue. </exception>
 		*/
-		public static byte[] coutCible(string cible, byte puissance = 0)
+		public static byte[] coutCible(string cible, byte puissance)
 		{
 			byte[] res = new byte[3] { 0, 0, 0 };
 			byte indexCible = selectCible(cible);
@@ -401,39 +394,6 @@ namespace Projet
 			return res;
 		}
 
-		public static byte[] calculCoutCle(string motPrincipal, string[] arguments, byte addons){
-			// Compte du nombre d'arguments pour avoir le bon nombre de paramètres sur un mot clé donné
-			int nbArgs = arguments.Count();
-
-			// Résultat du calcul (Important donc :D)
-			byte[] res = new byte[3] { 0, 0, 0 };
-
-			// ================================================================================
-			// ANALYSE
-			// ================================================================================
-			if(motPrincipal == "analyse"){
-				if(!(nbArgs < 1 || nbArgs > 2)) {
-					res = Somme(res, Mot.Analyse());
-				} else {
-					throw new Exception("Manque de paramètres");
-				}
-			}
-			// ================================================================================
-			// ARMURE & ESPRIT
-			// ================================================================================
-			else if ((motPrincipal == "armure" || motPrincipal == "esprit") && !(nbArgs < 2 || nbArgs > 4))
-			{
-				
-			}
-			// ================================================================================
-			// BRULE
-			// ================================================================================
-			else if(motPrincipal == "brûle")
-			{
-
-			}
-		}
-
 		/** <summary> Fonction importante : Calcul le coût d'un sort </summary>
 			<param name="s"> L'écriture du sort </param>
 			<exception cref="NotImplementedException"> Le mot clé n'est pas encore décrypté et donc incalculable </exception>
@@ -441,8 +401,8 @@ namespace Projet
 		*/
 		public static byte[] calculCout(string s, byte addons)
 		{
-			string motPrincipal = recupererClePrincipale(s).ToLower();
-			string[] arguments = ToLower(recupererArguments(s));
+			string motPrincipal = getMotPrincipal(s).ToLower();
+			string[] arguments = ToLower(getArguments(s));
 
 			// Compte du nombre d'addons
 			if(addons == 0)
@@ -520,6 +480,7 @@ namespace Projet
 					}
 					else res = Somme(res, Mot.Feu(constValue(arguments[1])));
 					break;
+				
 				// ================================================================================
 				// FOUDRE
 				// ================================================================================
@@ -609,6 +570,19 @@ namespace Projet
 					break;
 
 				// ================================================================================
+				// VENT
+				// ================================================================================
+				case "vent":
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Manque des arguments
+
+						if (nbArgs > 2)
+						{
+							res = Somme(res, Mot.Vent(constValue(arguments[1]), arguments[2]));
+							goto Addon; // Mot clé supplémentaire ?
+						}
+					else res = Somme(res, Mot.Vent(constValue(arguments[1])));
+					break;
+				// ================================================================================
 				// DEFAULT -> Error
 				// ================================================================================
 				default:
@@ -620,7 +594,7 @@ namespace Projet
 				// ADDON
 				// ================================================================================
 				Addon:
-					res = Somme(res, calculCout(arguments[arguments.Length - 1], addons));
+					if (nbArgs > 3) res = Somme(res, calculCout(arguments[arguments.Length - 1], addons));
 					break;
 			}
 

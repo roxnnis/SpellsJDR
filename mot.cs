@@ -199,7 +199,33 @@ namespace Projet
 		// ================================================================================
 		// VENT
 		// ================================================================================
-		//public static byte[] Vent() { return new byte[3]; }
+		public static byte[] Vent(byte puissance) {
+			byte[] res = new byte[3] { 1, 1, 0 };
+			res[0] += (byte) (puissance/2);
+			res[2] += (byte) (puissance/3);
+			return res;
+		}
+		public static byte[] Vent(byte puissance, string temps) {
+			byte[] res = Vent(puissance);
+
+			byte indexTemps = M.selectTemps(temps);
+			switch (indexTemps)
+			{
+				case 1:
+					res[0] += M.constValue(temps);
+					res[2] = (byte) (puissance + M.constValue(temps));
+					break;
+				case 2:
+					res = M.Somme(res, Aura(puissance));
+					break;
+				case 3:
+					res = M.Somme(res, Passif(puissance));
+					break;
+				default:
+					throw new Exception("TempsException : La variable de temps n'a pas été comprise.");
+			}
+			return res;
+		}
 
 		// --------------------------------------------------------------------------------
 		// ------------------------------------ Neutre ------------------------------------
