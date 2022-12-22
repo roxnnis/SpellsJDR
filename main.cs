@@ -68,7 +68,7 @@ namespace Projet
 			Console.WriteLine("Glace          [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine("Soin           [Cible] [Puissance <= 9] <Temps>  <Addon>");
 			Console.WriteLine("Terre          [Cible] [Puissance]      <Temps>  <Addon>");
-			Console.WriteLine("Vent           [Cible] [Puissance]      <Temps>  <Addon> /!\\ Not Implemented Yet");
+			Console.WriteLine("Vent           [Cible] [Puissance]      <Temps>  <Addon>");
 			Console.WriteLine();
 			Console.WriteLine("=================== Éléments neutres ===================");
 			Console.WriteLine();
@@ -81,8 +81,8 @@ namespace Projet
 			Console.WriteLine("====================== Affliction ======================");
 			Console.WriteLine();
 			Console.WriteLine("Brûle          [Cible] [Puissance]      [Chance] <Addon>");
-			Console.WriteLine("Poison         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
-			Console.WriteLine("Saigne         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
+			Console.WriteLine("Paralyse       [Cible] [Puissance]      [Chance] <Addon>");
+			Console.WriteLine("Saigne         [Cible] [Puissance]      [Chance] <Addon>");
 			Console.WriteLine("Soin Statut    [Cible]                  [Chance] <Addon>");
 			Console.WriteLine("Son            [Cible] [Puissance]      [Chance] <Addon>");
 			Console.WriteLine();
@@ -505,6 +505,30 @@ namespace Projet
 					else res = Somme(res, Mot.Glace(constValue(arguments[1])));
 					break;
 				// ================================================================================
+				// PARALYSE
+				// ================================================================================
+				case "paralyse":
+					if (nbArgs < 3 || nbArgs > 4) goto Error;
+						res = Somme(res, Mot.Paralyse(constValue(arguments[1]), constValue(arguments[2])));
+					if (nbArgs > 3) goto Addon; // Mot clé supplémentaire ?
+					break;
+				// ================================================================================
+				// PERMÉABLE
+				// ================================================================================
+				case "perméable":
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
+					res = Somme(res, Mot.Permeable(constValue(arguments[1]), addons));
+					if (nbArgs > 3) goto Addon; // Mot clé supplémentaire ?
+					break;
+				// ================================================================================
+				// POISON
+				// ================================================================================
+				// case "poison":
+				// 	if (nbArgs < 3 || nbArgs > 4) goto Error;
+				// 		res = Somme(res, Mot.Poison(constValue(arguments[1]), constValue(arguments[2])));
+				// 	if (nbArgs > 3) goto Addon; // Mot clé supplémentaire ?
+				// 	break;
+				// ================================================================================
 				// SOIN
 				// ================================================================================
 				case "soin":
@@ -546,14 +570,6 @@ namespace Projet
 						goto Addon; // Mot clé supplémentaire ?
 					}
 					else res = Somme(res, Mot.Terre(constValue(arguments[1])));
-					break;
-				// ================================================================================
-				// PERMÉABLE
-				// ================================================================================
-				case "perméable":
-					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
-					res = Somme(res, Mot.Permeable(constValue(arguments[1]), addons));
-					if (nbArgs > 3) goto Addon;
 					break;
 				// ================================================================================
 				// VIE PONDÉRÉ

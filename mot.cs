@@ -323,6 +323,16 @@ namespace Projet
 			return res;
 		}
 		// ================================================================================
+		// PARALYSE
+		// ================================================================================
+		public static byte[] Paralyse(byte puissance, byte chance)
+		{
+			byte[] res = new byte[3] {0,1,3};
+			res[0] = (byte) (chance/3);
+			res[2] += (byte) (puissance + chance/3);
+			return res;
+		}
+		// ================================================================================
 		// SOIN STATUT
 		// ================================================================================
 		public static byte[] SoinStatut(byte chance){
