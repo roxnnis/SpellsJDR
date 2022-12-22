@@ -333,6 +333,16 @@ namespace Projet
 			return res;
 		}
 		// ================================================================================
+		// SAIGNE
+		// ================================================================================
+		public static byte[] Saigne(byte puissance, byte chance)
+		{
+			byte[] res = new byte[3] {1,3,0};
+			res[0] += (byte) (chance/2 + puissance/4);
+			res[2] += (byte) (puissance/2);
+			return res;
+		}
+		// ================================================================================
 		// SOIN STATUT
 		// ================================================================================
 		public static byte[] SoinStatut(byte chance){

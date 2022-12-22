@@ -531,6 +531,11 @@ namespace Projet
 				// ================================================================================
 				// SOIN
 				// ================================================================================
+				case "saigne":
+					if (nbArgs < 3 || nbArgs > 4) goto Error;
+						res = Somme(res, Mot.Saigne(constValue(arguments[1]), constValue(arguments[2])));
+					if (nbArgs > 3) goto Addon; // Mot clé supplémentaire ?
+					break;
 				case "soin":
 					if (nbArgs < 2 || nbArgs > 4 || constValue(arguments[1]) > 10) goto Error; // Manque des arguments ou argument invalide
 
