@@ -199,7 +199,33 @@ namespace Projet
 		// ================================================================================
 		// VENT
 		// ================================================================================
-		//public static byte[] Vent() { return new byte[3]; }
+		public static byte[] Vent(byte puissance) {
+			byte[] res = new byte[3] { 1, 1, 0 };
+			res[0] += (byte) (puissance/2);
+			res[2] += (byte) (puissance/3);
+			return res;
+		}
+		public static byte[] Vent(byte puissance, string temps) {
+			byte[] res = Vent(puissance);
+
+			byte indexTemps = M.selectTemps(temps);
+			switch (indexTemps)
+			{
+				case 1:
+					res[0] += (byte) (M.constValue(temps)/3);
+					res[2] = (byte) ((puissance + M.constValue(temps))/3);
+					break;
+				case 2:
+					res = M.Somme(res, Aura(puissance));
+					break;
+				case 3:
+					res = M.Somme(res, Passif(puissance));
+					break;
+				default:
+					throw new Exception("TempsException : La variable de temps n'a pas été comprise.");
+			}
+			return res;
+		}
 
 		// --------------------------------------------------------------------------------
 		// ------------------------------------ Neutre ------------------------------------
@@ -297,6 +323,26 @@ namespace Projet
 			return res;
 		}
 		// ================================================================================
+		// PARALYSE
+		// ================================================================================
+		public static byte[] Paralyse(byte puissance, byte chance)
+		{
+			byte[] res = new byte[3] {0,1,3};
+			res[0] = (byte) (chance/3);
+			res[2] += (byte) (puissance + chance/3);
+			return res;
+		}
+		// ================================================================================
+		// SAIGNE
+		// ================================================================================
+		public static byte[] Saigne(byte puissance, byte chance)
+		{
+			byte[] res = new byte[3] {1,3,0};
+			res[0] += (byte) (chance/2 + puissance/4);
+			res[2] += (byte) (puissance/2);
+			return res;
+		}
+		// ================================================================================
 		// SOIN STATUT
 		// ================================================================================
 		public static byte[] SoinStatut(byte chance){
@@ -315,6 +361,50 @@ namespace Projet
 			res[2] += (byte)(chance / 3);
 			return res;
 		}
+
+		// --------------------------------------------------------------------------------
+		// --------------------------------- Multi-Cibles ---------------------------------
+		// --------------------------------------------------------------------------------
+		// ================================================================================
+		// LUMIÈRE
+		// ================================================================================
+		public static byte[] Lumiere(byte puissance)
+		{
+			byte[] res = new byte[3] { 0, 0, 0 };
+			res[0] = (byte)(puissance / 3);
+			res[1] = (byte)(puissance / 6);
+			res[2] = (byte)(puissance / 2);
+			return res;
+		}
+		public static byte[] Lumiere(byte puissance, string temps)
+		{
+			byte[] res = Lumiere(puissance);
+
+			byte indexTemps = M.selectTemps(temps);
+			switch (indexTemps)
+			{
+				case 1:
+					res[1] += (byte)(M.constValue(temps) / 5);
+					res[2] = (byte)((puissance + M.constValue(temps)) / 2);
+					break;
+				case 2:
+					res = M.Somme(res, Aura(puissance));
+					break;
+				case 3:
+					res = M.Somme(res, Passif(puissance));
+					break;
+				default:
+					throw new Exception("TempsException : La variable de temps n'a pas été comprise.");
+			}
+			return res;
+		}
+		public static byte[] Lumiere(byte puissance, string temps, byte nbAddons)
+		{
+			byte[] res = Lumiere(puissance, temps);
+			res[2] += nbAddons;
+			return res;
+		}
+		
 
 		// --------------------------------------------------------------------------------
 		// ------------------------------------ Cibles ------------------------------------
@@ -383,8 +473,8 @@ namespace Projet
 			res[1] += M.coutMemoireConst(args);
 
 			// Coûts
-			if (args.Length == 2) res[0] += (byte)(M.constValue(args[1]) / 10);
-			res[2] += (byte)(M.constValue(args[0]) / 4);
+			if (args.Length == 2) res[0] += (byte)(M.constValue(args[0]) / 10);
+			res[2] += (byte)(M.constValue(args[1]) / 4);
 			return res;
 		}
 		public static byte[] Soi() { return new byte[3] { 0, 1, 0 }; }

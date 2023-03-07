@@ -20,7 +20,7 @@ namespace Projet
 				choice = menu();
 				Console.WriteLine();
 				switch(choice){
-					case 0: HM.afficherCostTable(); break;
+					case 0: HM.Main(); break;
 					case 1: 
 						try{
 							afficher(calculCout(spell(), 0));
@@ -58,53 +58,57 @@ namespace Projet
 		public static void listeMots(){
 			Console.WriteLine("================= Arguments numériques =================");
 			Console.WriteLine();
-			Console.WriteLine("Constante      [Valeur]                                 ");
+			Console.WriteLine("Constante    [Valeur]                                 ");
 			Console.WriteLine();
 			Console.WriteLine("================== Éléments  naturels ==================");
 			Console.WriteLine();
-			Console.WriteLine("Eau            [Cible] [Puissance]      <Temps>  <Addon>");
-			Console.WriteLine("Feu            [Cible] [Puissance]      <Temps>  <Addon>");
-			Console.WriteLine("Foudre         [Cible] [Puissance]      <Temps>  <Addon>");
-			Console.WriteLine("Glace          [Cible] [Puissance]      <Temps>  <Addon>");
-			Console.WriteLine("Soin           [Cible] [Puissance <= 9] <Temps>  <Addon>");
-			Console.WriteLine("Terre          [Cible] [Puissance]      <Temps>  <Addon>");
-			Console.WriteLine("Vent           [Cible] [Puissance]      <Temps>  <Addon> /!\\ Not Implemented Yet");
+			Console.WriteLine("Eau          [Cible] [Puissance]        <Temps>  <Addon>");
+			Console.WriteLine("Feu          [Cible] [Puissance]        <Temps>  <Addon>");
+			Console.WriteLine("Foudre       [Cible] [Puissance]        <Temps>  <Addon>");
+			Console.WriteLine("Glace        [Cible] [Puissance]        <Temps>  <Addon>");
+			Console.WriteLine("Soin         [Cible] [Puissance <= 9]   <Temps>  <Addon>");
+			Console.WriteLine("Terre        [Cible] [Puissance]        <Temps>  <Addon>");
+			Console.WriteLine("Vent         [Cible] [Puissance]        <Temps>  <Addon>");
 			Console.WriteLine();
 			Console.WriteLine("=================== Éléments neutres ===================");
 			Console.WriteLine();
-			Console.WriteLine("Analyse        [Cible]                           <Addon>");
-			Console.WriteLine("Armure         [Cible] [Puissance]      <Temps>  <Addon>");
-			Console.WriteLine("Esprit         [Cible] [Puissance]      <Temps>  <Addon>");
-			Console.WriteLine("Perméable      [Cible] [Puissance]      <Temps>  <Addon>");
-			Console.WriteLine("Vie Pondéré    [Cible] [Puissance]      <Temps>  <Addon>");
+			Console.WriteLine("Analyse      [Cible]                             <Addon>");
+			Console.WriteLine("Armure       [Cible] [Puissance]        <Temps>  <Addon>");
+			Console.WriteLine("Esprit       [Cible] [Puissance]        <Temps>  <Addon>");
+			Console.WriteLine("Perméable    [Cible] [Puissance]        <Temps>  <Addon>");
+			Console.WriteLine("Vie Pondéré  [Cible] [Puissance]        <Temps>  <Addon>");
 			Console.WriteLine();
 			Console.WriteLine("====================== Affliction ======================");
 			Console.WriteLine();
-			Console.WriteLine("Brûle          [Cible] [Puissance]      [Chance] <Addon>");
-			Console.WriteLine("Poison         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
-			Console.WriteLine("Saigne         [Cible] [Puissance]      <Chance> <Addon> /!\\ Not Implemented Yet");
-			Console.WriteLine("Soin Statut    [Cible]                  [Chance] <Addon>");
-			Console.WriteLine("Son            [Cible] [Puissance]      [Chance] <Addon>");
+			Console.WriteLine("Brûle        [Cible] [Puissance]        [Chance] <Addon>");
+			Console.WriteLine("Paralyse     [Cible] [Puissance]        [Chance] <Addon>");
+			Console.WriteLine("Saigne       [Cible] [Puissance]        [Chance] <Addon>");
+			Console.WriteLine("Soin Statut  [Cible]                    [Chance] <Addon>");
+			Console.WriteLine("Son          [Cible] [Puissance]        [Chance] <Addon>");
+			Console.WriteLine();
+			Console.WriteLine("====================== Affliction ======================");
+			Console.WriteLine();
+			Console.WriteLine("Lumière      [Cible] [Puissance] [Temps] [Cible] <Addon>");
 			Console.WriteLine();
 			Console.WriteLine("======================== Cibles ========================");
 			Console.WriteLine();
-			Console.WriteLine("Contact        [Cible]                                  ");
+			Console.WriteLine("Contact      [Cible]                                    ");
 			Console.WriteLine("Entité                                                  ");
-			Console.WriteLine("Objet          [Forme]                  <Distance>      ");
-			Console.WriteLine("Projectile     [Forme]                  <Distance>      ");
-			Console.WriteLine("Rayon          [Longueur]               [Taille]        ");
+			Console.WriteLine("Objet        [Forme]                    <Distance>      ");
+			Console.WriteLine("Projectile   [Forme]                    <Distance>      ");
+			Console.WriteLine("Rayon        [Longueur]                 [Taille]        ");
 			Console.WriteLine("Soi                                                     ");
-			Console.WriteLine("Zone           [Taille <= 5]            <Distance>      ");
+			Console.WriteLine("Zone         [Taille <= 5]              <Distance>      ");
 			Console.WriteLine();
 			Console.WriteLine("======================== Formes ========================");
 			Console.WriteLine();
-			Console.WriteLine("Boule          [Taille]                 <Nombre >= 1>   ");
-			Console.WriteLine("Cage           [Taille]                                 ");
-			Console.WriteLine("Fleur          [Taille]                 <Nombre >= 1>   ");
-			Console.WriteLine("Flèche         [Taille]                 <Nombre >= 1>   ");
-			Console.WriteLine("Lame           [Taille]                 <Nombre >= 1>   ");
-			Console.WriteLine("Lance          [Taille]                 <Nombre >= 1>   ");
-			Console.WriteLine("Lierre         [Taille]                 <Propagation>   ");
+			Console.WriteLine("Boule        [Taille]                   <Nombre >= 1>   ");
+			Console.WriteLine("Cage         [Taille]                                   ");
+			Console.WriteLine("Fleur        [Taille]                   <Nombre >= 1>   ");
+			Console.WriteLine("Flèche       [Taille]                   <Nombre >= 1>   ");
+			Console.WriteLine("Lame         [Taille]                   <Nombre >= 1>   ");
+			Console.WriteLine("Lance        [Taille]                   <Nombre >= 1>   ");
+			Console.WriteLine("Lierre       [Taille]                   <Propagation>   ");
 			Console.WriteLine("Ligne                                                   ");
 			Console.WriteLine();
 			Console.WriteLine("========================= Tour =========================");
@@ -431,8 +435,6 @@ namespace Projet
 				case "analyse":
 					if (nbArgs < 1 || nbArgs > 2) goto Error; // Manque des arguments
 					res = Somme(res, Mot.Analyse());
-					if (nbArgs > 1)
-						goto Addon;
 					break;
 				// ================================================================================
 				// ARMURE & ESPRIT
@@ -480,6 +482,7 @@ namespace Projet
 					}
 					else res = Somme(res, Mot.Feu(constValue(arguments[1])));
 					break;
+				
 				// ================================================================================
 				// FOUDRE
 				// ================================================================================
@@ -503,9 +506,48 @@ namespace Projet
 					}
 					else res = Somme(res, Mot.Glace(constValue(arguments[1])));
 					break;
+				case "lumière":
+					if(nbArgs < 2 || nbArgs > 5) goto Error; // Manque des arguments
+					if(nbArgs > 3)
+					{
+						res = Somme(res, Mot.Lumiere(constValue(arguments[1]), arguments[2], addons));
+						goto Addon5; // Mot clé supplémentaire ?
+					} else if (nbArgs > 2) {
+						res = Somme(res, Mot.Lumiere(constValue(arguments[1]), arguments[2]));
+					} else res = Somme(res, Mot.Lumiere(constValue(arguments[1])));
+					break;
+				// ================================================================================
+				// PARALYSE
+				// ================================================================================
+				case "paralyse":
+					if (nbArgs < 3 || nbArgs > 4) goto Error;
+						res = Somme(res, Mot.Paralyse(constValue(arguments[1]), constValue(arguments[2])));
+					if (nbArgs > 3) goto Addon; // Mot clé supplémentaire ?
+					break;
+				// ================================================================================
+				// PERMÉABLE
+				// ================================================================================
+				case "perméable":
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
+					res = Somme(res, Mot.Permeable(constValue(arguments[1]), addons));
+					if (nbArgs > 3) goto Addon; // Mot clé supplémentaire ?
+					break;
+				// ================================================================================
+				// POISON
+				// ================================================================================
+				// case "poison":
+				// 	if (nbArgs < 3 || nbArgs > 4) goto Error;
+				// 		res = Somme(res, Mot.Poison(constValue(arguments[1]), constValue(arguments[2])));
+				// 	if (nbArgs > 3) goto Addon; // Mot clé supplémentaire ?
+				// 	break;
 				// ================================================================================
 				// SOIN
 				// ================================================================================
+				case "saigne":
+					if (nbArgs < 3 || nbArgs > 4) goto Error;
+						res = Somme(res, Mot.Saigne(constValue(arguments[1]), constValue(arguments[2])));
+					if (nbArgs > 3) goto Addon; // Mot clé supplémentaire ?
+					break;
 				case "soin":
 					if (nbArgs < 2 || nbArgs > 4 || constValue(arguments[1]) > 10) goto Error; // Manque des arguments ou argument invalide
 
@@ -547,14 +589,6 @@ namespace Projet
 					else res = Somme(res, Mot.Terre(constValue(arguments[1])));
 					break;
 				// ================================================================================
-				// PERMÉABLE
-				// ================================================================================
-				case "perméable":
-					if (nbArgs < 2 || nbArgs > 4) goto Error; // Nombre d'arguments incorrect ?
-					res = Somme(res, Mot.Permeable(constValue(arguments[1]), addons));
-					if (nbArgs > 3) goto Addon;
-					break;
-				// ================================================================================
 				// VIE PONDÉRÉ
 				// ================================================================================
 				case "vie pondéré":
@@ -568,9 +602,19 @@ namespace Projet
 					else res = Somme(res, Mot.ViePondere(constValue(arguments[1])));
 					break;
 
-				// ======== Vent (INCONNU)
-				case "vent": throw new NotImplementedException();
+				// ================================================================================
+				// VENT
+				// ================================================================================
+				case "vent":
+					if (nbArgs < 2 || nbArgs > 4) goto Error; // Manque des arguments
 
+						if (nbArgs > 2)
+						{
+							res = Somme(res, Mot.Vent(constValue(arguments[1]), arguments[2]));
+							goto Addon; // Mot clé supplémentaire ?
+						}
+					else res = Somme(res, Mot.Vent(constValue(arguments[1])));
+					break;
 				// ================================================================================
 				// DEFAULT -> Error
 				// ================================================================================
@@ -584,6 +628,9 @@ namespace Projet
 				// ================================================================================
 				Addon:
 					if (nbArgs > 3) res = Somme(res, calculCout(arguments[arguments.Length - 1], addons));
+					break;
+				Addon5:
+					if(nbArgs > 4) res = Somme(res, calculCout(arguments[arguments.Length - 1], addons));
 					break;
 			}
 
